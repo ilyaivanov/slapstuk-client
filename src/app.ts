@@ -1,7 +1,7 @@
 import { cls, dom, style } from "../infra";
-import Header from "./header";
-import MainTab from "./mainTab";
-import SearchTab from "./searchTab";
+import Header from "./Header";
+import MainTab from "./MainTab";
+import SearchTab from "./SearchTab";
 
 export const renderApp = () => {
   const header = new Header();
