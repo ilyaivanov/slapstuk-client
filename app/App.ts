@@ -1,8 +1,12 @@
-export default class App {
-  constructor(private el: Element) {
-    const div = document.createElement("div");
-    div.textContent = "Hello World";
+import { cls, dom } from "../infra";
+import Header from "./Header";
+import MainTab from "./MainTab";
 
-    el.appendChild(div);
-  }
-}
+export const renderApp = () => {
+  const header = new Header();
+  const mainTab = new MainTab();
+  return dom.div({
+    className: cls.page,
+    children: [header.el, mainTab.el],
+  });
+};
