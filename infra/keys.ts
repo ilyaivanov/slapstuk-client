@@ -4,8 +4,10 @@ export type ClassName = valueof<typeof cls>;
 export const cls = {
   page: "page",
   header: "header",
+  main: "main",
   mainTab: "main-tab",
   searchTab: "search-tab",
+  searchTab_Hidden: "search-tab-hidden",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;

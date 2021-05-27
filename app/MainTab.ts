@@ -5,5 +5,6 @@ export default class MainTab {
 }
 
 style.class(cls.mainTab, {
+  flex: 1,
   backgroundColor: "green",
 });
