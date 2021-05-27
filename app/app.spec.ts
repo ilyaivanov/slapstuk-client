@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent } from "@testing-library/dom";
 import { cls } from "../infra";
-import { renderApp } from "./App";
+import { renderApp } from "./app";
 
 describe("Having a loaded app", () => {
   beforeEach(() => {
