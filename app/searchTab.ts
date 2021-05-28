@@ -1,11 +1,12 @@
 import { cls, css, dom, style } from "../infra";
+import { Store } from "../model/store";
 
 export default class SearchTab {
-  isSearchVisible = false;
   el = dom.div({ classNames: [cls.searchTab] });
 
-  constructor() {
-    this.updateSearch(this.isSearchVisible);
+  constructor(private store: Store) {
+    this.updateSearch(store.isSearchVisible);
+    store.onVisiblityChange(this.updateSearch);
     document.addEventListener("keydown", this.onKeyDown);
   }
 
@@ -19,8 +20,8 @@ export default class SearchTab {
 
     if ((e.code == "Digit2" || e.code == "KeyK") && e.ctrlKey) {
       e.preventDefault();
-      this.isSearchVisible = !this.isSearchVisible;
-      this.updateSearch(this.isSearchVisible);
+
+      this.store.toggleVisibility();
     }
   };
 

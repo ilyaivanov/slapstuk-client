@@ -2,11 +2,12 @@ import { cls, dom, style } from "../infra";
 import Header from "./header";
 import MainTab from "./mainTab";
 import SearchTab from "./searchTab";
+import { Store } from "../model/store";
 
-export const renderApp = () => {
+export const renderApp = (store: Store) => {
   const header = new Header();
-  const mainTab = new MainTab();
-  const searchTab = new SearchTab();
+  const mainTab = new MainTab(store);
+  const searchTab = new SearchTab(store);
   return dom.div({
     className: cls.page,
     children: [
