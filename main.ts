@@ -11,6 +11,8 @@ setTimeout(() => {
     buildItems(`
     HOME
         first
+           subfirst1
+           subfirst2
         second
         third
         fourth

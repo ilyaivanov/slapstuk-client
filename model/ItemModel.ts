@@ -16,6 +16,9 @@ export class ItemModel {
     else return [];
   };
 
+  get isOpen() {
+    return this.props.isOpen;
+  }
   get title() {
     return this.props.title;
   }

@@ -8,6 +8,10 @@ export const cls = {
   mainTab: "main-tab",
   searchTab: "search-tab",
   searchTab_Hidden: "search-tab-hidden",
+
+  //tree
+  row: "row",
+  rowTitle: "row-title",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;

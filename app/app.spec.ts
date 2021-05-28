@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId } from "@testing-library/dom";
-import { cls } from "../infra";
+import { cls, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
 import { buildItems } from "../api/itemsBuilder";
@@ -32,25 +32,48 @@ describe("Having a loaded app", () => {
 
   describe("when loading items from a backend (dummy data loader for tests)", () => {
     beforeEach(() => {
-      store.itemsLoaded(
-        buildItems(`
+      const items = buildItems(`
       HOME
         first
+          subfirst1
+          subfirst2
         second
         third
-      `)
-      );
+      `);
+      store.itemsLoaded(items);
     });
     it("it should show that rows", () => {
       expect(row("first")).toBeInTheDocument();
       expect(row("second")).toBeInTheDocument();
       expect(row("third")).toBeInTheDocument();
     });
+
+    it("first row should have level 0", () => {
+      expect(row("first")).toHaveClass(levels.rowForLevel(0));
+    });
+
+    it("title of first should be first", () => {
+      expect(rowTitle("first")).toEqual("first");
+    });
+
+    it("shows subfirst1 and subfirst2 as child of first", () => {
+      expect(row("subfirst1")).toBeInTheDocument();
+      expect(row("subfirst2")).toBeInTheDocument();
+    });
+
+    it("subfirst1 row should have level 1", () => {
+      expect(row("subfirst1")).toHaveClass(levels.rowForLevel(1));
+    });
   });
 });
 
-const searchTab = () => document.getElementsByClassName(cls.searchTab)[0];
+const getRowTitle = (row: Element) =>
+  row.getElementsByClassName(cls.rowTitle)[0].textContent;
+
 const row = (id: string) => getByTestId(document.body, "row-" + id);
+const rowTitle = (id: string) => getRowTitle(row(id));
+
+const searchTab = () => document.getElementsByClassName(cls.searchTab)[0];
 
 const shortcuts = {
   ctrlAnd2: () =>
