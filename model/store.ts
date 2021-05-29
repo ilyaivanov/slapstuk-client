@@ -4,7 +4,10 @@ import { ItemCollection, ItemModel } from "./ItemModel";
 type EventsTypes = {
   onHomeLoaded: ItemModel;
   onSearchVisibilityChange: boolean;
+  onThemeChange: Theme;
 };
+
+export type Theme = "dark" | "light";
 
 export class Store {
   private home?: ItemModel;
@@ -20,27 +23,37 @@ export class Store {
     this.events.on("onSearchVisibilityChange", cb);
 
   itemsLoaded = (items: Items) => {
-    this.home = this.createModel(items["HOME"], items);
+    this.home = createModel(items["HOME"], items);
     this.events.trigger("onHomeLoaded", this.home);
   };
 
-  createModel = (item: Item, items: Items): ItemModel => {
-    const container = item as ItemContainer;
-    const model = new ItemModel({
-      children:
-        "children" in item
-          ? new ItemCollection(
-              item.children.map((id) => this.createModel(items[id], items))
-            )
-          : undefined,
-      title: item.title,
-      type: item.type,
-      isOpen: !container.isCollapsedInGallery || false,
-      id: item.id,
-    });
-    // model.forEachChild((child) => child.setParent(model));
-    return model;
+  onHomeLoaded = (cb: Action<ItemModel>) => this.events.on("onHomeLoaded", cb);
+
+  theme = "dark" as Theme;
+  toggleTheme = () => {
+    this.theme = this.theme == "dark" ? "light" : "dark";
+    this.events.trigger("onThemeChange", this.theme);
   };
 
-  onHomeLoaded = (cb: Action<ItemModel>) => this.events.on("onHomeLoaded", cb);
+  onThemeChange = (cb: Action<Theme>) => {
+    this.events.on("onThemeChange", cb);
+  };
 }
+
+const createModel = (item: Item, items: Items): ItemModel => {
+  const container = item as ItemContainer;
+  const model = new ItemModel({
+    children:
+      "children" in item
+        ? new ItemCollection(
+            item.children.map((id) => createModel(items[id], items))
+          )
+        : undefined,
+    title: item.title,
+    type: item.type,
+    isOpen: !container.isCollapsedInGallery || false,
+    id: item.id,
+  });
+  // model.forEachChild((child) => child.setParent(model));
+  return model;
+};

@@ -1,4 +1,4 @@
-import { ClassName, ElementId, VariableName } from "./keys";
+import { ClassName, ElementId } from "./keys";
 
 const s = document.createElement("style");
 document.head.appendChild(s);
@@ -15,7 +15,7 @@ const ignoredStyles: Record<string, number> = {
 };
 
 type StylesWithVariables = Styles & {
-  variables?: Partial<Record<VariableName, string>>;
+  variables?: Record<string, string>;
 };
 
 type CompoundStyles = StylesWithVariables & {
@@ -129,7 +129,7 @@ export type Styles = Partial<{
 
   //flex
   flex: number;
-  display: "flex" | "inline-block";
+  display: "flex" | "inline-block" | "block";
   flexDirection: "row" | "column";
   justifyContent: "flex-start" | "center" | "flex-end";
   flexWrap: "wrap";
@@ -153,7 +153,7 @@ export type Styles = Partial<{
 
   //typography
   fontFamily: string;
-  color: string | VariableName;
+  color: string;
   lineHeight: number;
   fontSize: number;
   fontWeight: "bold";

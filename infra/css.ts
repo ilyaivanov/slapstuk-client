@@ -1,4 +1,4 @@
-import { VariableName, ClassName } from "./keys";
+import { ClassName } from "./keys";
 import { camelToSnakeCase, Styles, style } from "./style";
 
 type Transition = Partial<Record<keyof Styles, number>>;
@@ -7,8 +7,6 @@ export const transition = (transitionDefinition: Transition): string =>
   Object.entries(transitionDefinition)
     .map(([key, value]) => `${camelToSnakeCase(key)} ${value}ms`)
     .join(", ");
-
-export const useVar = (variableName: VariableName) => `var(--${variableName})`;
 
 export const paddingVertical = (v: number): Styles => ({
   paddingBottom: v,

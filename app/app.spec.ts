@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId } from "@testing-library/dom";
-import { cls, levels } from "../infra";
+import { ClassName, cls, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
 import { buildItems } from "../api/itemsBuilder";
@@ -65,19 +65,59 @@ describe("Having a loaded app", () => {
       expect(row("subfirst1")).toHaveClass(levels.rowForLevel(1));
     });
   });
+
+  //Theme management
+  it("by default theme is dark", () =>
+    expect(page()).toHaveClass(cls.darkTheme));
+
+  describe("toggling theme", () => {
+    beforeEach(() => fireEvent.click(themeToggler()));
+    it("switches it to light", () =>
+      expect(page()).toHaveClass(cls.lightTheme));
+
+    describe("toggling theme again", () => {
+      beforeEach(() => fireEvent.click(themeToggler()));
+      it("switches it to dark", () =>
+        expect(page()).toHaveClass(cls.darkTheme));
+    });
+  });
 });
 
 const getRowTitle = (row: Element) =>
-  row.getElementsByClassName(cls.rowTitle)[0].textContent;
+  getElementWithClass(cls.rowTitle, row).textContent;
 
 const row = (id: string) => getByTestId(document.body, "row-" + id);
 const rowTitle = (id: string) => getRowTitle(row(id));
 
-const searchTab = () => document.getElementsByClassName(cls.searchTab)[0];
+const searchTab = () => getElementWithClass(cls.searchTab);
+const page = () => getElementWithClass(cls.page);
+const themeToggler = () => getElementWithClass(cls.themeToggle);
 
 const shortcuts = {
   ctrlAnd2: () =>
     fireEvent.keyDown(document, { code: "Digit2", ctrlKey: true }),
   ctrlAnd1: () =>
     fireEvent.keyDown(document, { code: "Digit1", ctrlKey: true }),
+};
+
+//TESTS INFRA
+//this is interesting, since method type getElementsByClassName is defined separately in Document and Element,
+//I can't just type context with Element or Document, because Document is not an Element
+type ContextToFindClasses = {
+  getElementsByClassName: typeof document.getElementsByClassName;
+};
+const getElementWithClass = (
+  className: ClassName,
+  context: ContextToFindClasses = document
+) => {
+  const elements = context.getElementsByClassName(className);
+
+  if (elements.length === 0)
+    throw new Error(`Can't find any element with class ${className}`);
+  if (elements.length > 1)
+    throw new Error(
+      `Found multiple elements with ${className}. I don't want to silently return first one, use a separate method for that`
+    );
+
+  return elements[0];
 };

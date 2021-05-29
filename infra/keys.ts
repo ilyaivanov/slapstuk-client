@@ -1,5 +1,6 @@
 type valueof<T> = T[keyof T];
 export type ClassName = valueof<typeof cls>;
+export type ClassMap = Partial<Record<ClassName, boolean>>;
 
 export const cls = {
   page: "page",
@@ -11,11 +12,19 @@ export const cls = {
 
   //tree
   row: "row",
+  rowChevron: "row-chevron",
+  rowChildren: "row-children",
+  rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",
-} as const;
+  rowIcon: "row-icon",
+  rowCircleInner: "row-circle-inner",
 
-export type VariableName = valueof<typeof cssVar>;
-export const cssVar = {} as const;
+  //themes
+  themeToggle: "theme-toggle",
+  themeToggleIcon: "theme-toggle-icon",
+  darkTheme: "theme-dark",
+  lightTheme: "theme-light",
+} as const;
 
 export type ElementId = valueof<typeof ids>;
 export const ids = {} as const;

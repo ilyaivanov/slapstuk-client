@@ -8,8 +8,8 @@ import { style } from "./style";
 export const rowForLevel = (level: number): ClassName =>
   ("level_" + level) as unknown as ClassName;
 
-export const childrenForLevel = (level: number): ClassName =>
-  ("children-level_" + level) as unknown as ClassName;
+export const childrenBorderForLevel = (level: number): ClassName =>
+  ("children-border-level_" + level) as unknown as ClassName;
 
 const numberOfLevelsToGenerate = 11;
 
@@ -22,7 +22,7 @@ for (let level = 0; level < numberOfLevelsToGenerate; level++) {
     paddingLeft: `calc(${base} + ${levelPadding})`,
     paddingRight: 20,
   });
-  style.class(`children-level_${level}` as any, {
+  style.class(childrenBorderForLevel(level), {
     left: `calc(${base} + ${
       level * spacings.spacePerLevel +
       spacings.chevronSize +
