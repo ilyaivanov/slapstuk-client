@@ -16,7 +16,7 @@ export const renderApp = (store: Store) => {
         className: cls.main,
         children: [mainTab.el, searchTab.el],
       }),
-      renderThemeToggler(store.toggleTheme),
+      renderThemeToggler(store),
     ],
   });
 
@@ -49,16 +49,27 @@ style.tag("body", {
   fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 });
 
-const renderThemeToggler = (onClick: EmptyAction) => {
-  return dom.div({
-    onClick,
+const renderThemeToggler = (store: Store) => {
+  const button = dom.div({
+    onClick: store.toggleTheme,
     className: cls.themeToggle,
-    children: [icons.bucket({ className: cls.themeToggleIcon })],
   });
+
+  const assignButtonIcon = (theme: Theme) =>
+    dom.setChild(
+      button,
+      theme === "dark"
+        ? icons.sun({ className: cls.themeToggleIcon })
+        : icons.moon({ className: cls.themeToggleIcon })
+    );
+  assignButtonIcon(store.theme);
+  store.onThemeChange(assignButtonIcon);
+
+  return button;
 };
 
 const buttonSize = 40;
-const iconSize = 14;
+const iconSize = 15;
 
 style.class(cls.themeToggle, {
   padding: (buttonSize - iconSize) / 2,

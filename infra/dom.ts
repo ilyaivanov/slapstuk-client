@@ -69,7 +69,7 @@ const assignElementProps = <T extends Element>(
   return elem;
 };
 
-const assignChildren = <T extends Element>(
+const appendChildren = <T extends Element>(
   elem: T,
   children: (Node | string | undefined)[] | undefined
 ): T => {
@@ -85,7 +85,7 @@ type DivProps = ElementProps & {
 };
 export const div = (props: DivProps) =>
   assignElementProps(
-    assignChildren(document.createElement("div"), props.children),
+    appendChildren(document.createElement("div"), props.children),
     props
   );
 
@@ -137,4 +137,32 @@ export const fragment = (nodes: (Node | undefined)[]): DocumentFragment => {
   const fragment = document.createDocumentFragment();
   nodes.forEach((node) => node && fragment.appendChild(node));
   return fragment;
+};
+
+//Utils
+export const setChildren = <T extends Element>(
+  elem: T,
+  children: (Node | string | undefined)[]
+): T => {
+  while (elem.firstChild) elem.firstChild.remove();
+  appendChildren(elem, children);
+  return elem;
+};
+
+export const setChild = <T extends Element>(
+  elem: T,
+  child: Node | string
+): T => {
+  while (elem.firstChild) elem.firstChild.remove();
+  appendChild(elem, child);
+  return elem;
+};
+
+const appendChild = <T extends Element>(
+  elem: T,
+  child: Node | string | undefined
+) => {
+  if (typeof child === "string") elem.append(child);
+  else if (child) elem.appendChild(child);
+  return elem;
 };
