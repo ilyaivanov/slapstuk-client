@@ -26,6 +26,10 @@ export class ItemModel {
   get isOpen() {
     return this.props.isOpen;
   }
+  get isEmptyNoNeedToLoad() {
+    //TODO: add loading indicator later
+    return this.props.children?.items.length == 0;
+  }
   get title() {
     return this.props.title;
   }

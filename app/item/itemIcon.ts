@@ -8,12 +8,14 @@ const iconSize = outerRadius * 2;
 const renderIcon = (item: ItemModel): Node => {
   const chevron = icons.chevron({
     className: cls.rowChevron,
+    classMap: {
+      "row-chevron-active": !item.isEmptyNoNeedToLoad,
+    },
     onClick: item.toggleVisibility,
   });
   const assignChevronClass = (isOpen: boolean) =>
-    dom.assignClassMap(chevron, {
-      "row-chevron-open": isOpen,
-    });
+    dom.assignClassMap(chevron, { "row-chevron-open": isOpen });
+
   assignChevronClass(item.isOpen);
   item.onVisibilityChange(assignChevronClass);
   return dom.fragment([
@@ -64,16 +66,17 @@ style.class(cls.rowChevron, {
   color: "#B8BCBF",
   opacity: 0,
   userSelect: "none",
-
-  onHover: {
-    color: "currentColor",
-  },
+  pointerEvents: "none",
+  onHover: { color: "currentColor" },
 });
 
 style.class(cls.rowChevronOpen, {
   transform: "rotateZ(90deg)",
 });
 
-style.parentHover(cls.row, cls.rowChevron, { opacity: 1 });
+style.parentHover(cls.row, cls.rowChevronActive, {
+  opacity: 1,
+  pointerEvents: "all",
+});
 
 export default renderIcon;

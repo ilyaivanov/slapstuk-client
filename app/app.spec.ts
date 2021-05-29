@@ -69,6 +69,12 @@ describe("Having a loaded app", () => {
     it("first chevron is not rotated", () =>
       expect(getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
 
+    it("first item chevron is active (it has children)", () =>
+      expect(getChevronFor("first")).toHaveClass(cls.rowChevronActive));
+
+    it("second item chevron is inactive (it has no children)", () =>
+      expect(getChevronFor("second")).not.toHaveClass(cls.rowChevronActive));
+
     describe("toggling first", () => {
       beforeEach(() => fireEvent.click(getChevronFor("first")));
 
