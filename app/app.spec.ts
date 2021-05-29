@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, getByTestId } from "@testing-library/dom";
+import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
 import { ClassName, cls, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
@@ -36,6 +36,7 @@ describe("Having a loaded app", () => {
       HOME
         first
           subfirst1
+            subfirst1.child
           subfirst2
         second
         third
@@ -43,13 +44,13 @@ describe("Having a loaded app", () => {
       store.itemsLoaded(items);
     });
     it("it should show that rows", () => {
-      expect(row("first")).toBeInTheDocument();
-      expect(row("second")).toBeInTheDocument();
-      expect(row("third")).toBeInTheDocument();
+      expect(getRow("first")).toBeInTheDocument();
+      expect(getRow("second")).toBeInTheDocument();
+      expect(getRow("third")).toBeInTheDocument();
     });
 
     it("first row should have level 0", () => {
-      expect(row("first")).toHaveClass(levels.rowForLevel(0));
+      expect(getRow("first")).toHaveClass(levels.rowForLevel(0));
     });
 
     it("title of first should be first", () => {
@@ -57,12 +58,48 @@ describe("Having a loaded app", () => {
     });
 
     it("shows subfirst1 and subfirst2 as child of first", () => {
-      expect(row("subfirst1")).toBeInTheDocument();
-      expect(row("subfirst2")).toBeInTheDocument();
+      expect(getRow("subfirst1")).toBeInTheDocument();
+      expect(getRow("subfirst2")).toBeInTheDocument();
     });
 
     it("subfirst1 row should have level 1", () => {
-      expect(row("subfirst1")).toHaveClass(levels.rowForLevel(1));
+      expect(getRow("subfirst1")).toHaveClass(levels.rowForLevel(1));
+    });
+
+    it("first chevron is not rotated", () =>
+      expect(getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
+
+    describe("toggling first", () => {
+      beforeEach(() => fireEvent.click(getChevronFor("first")));
+
+      it("hides it's children", () => {
+        expect(queryRow("subfirst1")).not.toBeInTheDocument();
+        expect(queryRow("subfirst2")).not.toBeInTheDocument();
+      });
+
+      it("rotates chevron", () =>
+        expect(getChevronFor("first")).not.toHaveClass(cls.rowChevronOpen));
+
+      describe("toggling first again", () => {
+        beforeEach(() => fireEvent.click(getChevronFor("first")));
+
+        it("hides it's children", () => {
+          expect(getRow("subfirst1")).toBeInTheDocument();
+          expect(getRow("subfirst2")).toBeInTheDocument();
+        });
+
+        it("moves chevron back", () =>
+          expect(getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
+      });
+    });
+
+    it(`Bug: hide subfolder, hide parent and open parent - subfolder won't open`, () => {
+      expect(queryRow("subfirst1.child")).toBeInTheDocument();
+      fireEvent.click(getChevronFor("subfirst1"));
+      fireEvent.click(getChevronFor("first"));
+      fireEvent.click(getChevronFor("first"));
+      fireEvent.click(getChevronFor("subfirst1"));
+      expect(queryRow("subfirst1.child")).toBeInTheDocument();
     });
   });
 
@@ -86,9 +123,12 @@ describe("Having a loaded app", () => {
 const getRowTitle = (row: Element) =>
   getElementWithClass(cls.rowTitle, row).textContent;
 
-const row = (id: string) => getByTestId(document.body, "row-" + id);
-const rowTitle = (id: string) => getRowTitle(row(id));
+const getRow = (id: string) => getByTestId(document.body, "row-" + id);
+const queryRow = (id: string) => queryByTestId(document.body, "row-" + id);
+const rowTitle = (id: string) => getRowTitle(getRow(id));
 
+const getChevronFor = (id: string) =>
+  getElementWithClass(cls.rowChevron, getRow(id));
 const searchTab = () => getElementWithClass(cls.searchTab);
 const page = () => getElementWithClass(cls.page);
 const themeToggler = () => getElementWithClass(cls.themeToggle);

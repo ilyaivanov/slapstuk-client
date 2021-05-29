@@ -13,6 +13,7 @@ export const cls = {
   //tree
   row: "row",
   rowChevron: "row-chevron",
+  rowChevronOpen: "row-chevron-open",
   rowChildren: "row-children",
   rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",

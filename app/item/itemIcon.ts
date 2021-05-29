@@ -1,14 +1,23 @@
-import { ClassName, cls, colorVars, dom, icons, style, svg } from "../infra";
-import { spacings } from "../infra/constants";
+import { ClassName, cls, colorVars, dom, icons, style, svg } from "../../infra";
+import { spacings } from "../../infra/constants";
+import { ItemModel } from "../../model/ItemModel";
 
 const { outerRadius, innerRadius } = spacings;
 const iconSize = outerRadius * 2;
 
-const renderIcon = (): Node => {
+const renderIcon = (item: ItemModel): Node => {
+  const chevron = icons.chevron({
+    className: cls.rowChevron,
+    onClick: item.toggleVisibility,
+  });
+  const assignChevronClass = (isOpen: boolean) =>
+    dom.assignClassMap(chevron, {
+      "row-chevron-open": isOpen,
+    });
+  assignChevronClass(item.isOpen);
+  item.onVisibilityChange(assignChevronClass);
   return dom.fragment([
-    icons.chevron({
-      className: cls.rowChevron,
-    }),
+    chevron,
     svg.svg({
       className: cls.rowIcon,
       viewBox: `0 0 ${iconSize} ${iconSize}`,
@@ -59,6 +68,10 @@ style.class(cls.rowChevron, {
   onHover: {
     color: "currentColor",
   },
+});
+
+style.class(cls.rowChevronOpen, {
+  transform: "rotateZ(90deg)",
 });
 
 style.parentHover(cls.row, cls.rowChevron, { opacity: 1 });

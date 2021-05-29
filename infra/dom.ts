@@ -144,7 +144,7 @@ export const setChildren = <T extends Element>(
   elem: T,
   children: (Node | string | undefined)[]
 ): T => {
-  while (elem.firstChild) elem.firstChild.remove();
+  removeChildren(elem);
   appendChildren(elem, children);
   return elem;
 };
@@ -153,9 +153,13 @@ export const setChild = <T extends Element>(
   elem: T,
   child: Node | string
 ): T => {
-  while (elem.firstChild) elem.firstChild.remove();
+  removeChildren(elem);
   appendChild(elem, child);
   return elem;
+};
+
+export const removeChildren = (elem: Element) => {
+  while (elem.firstChild) elem.firstChild.remove();
 };
 
 const appendChild = <T extends Element>(
