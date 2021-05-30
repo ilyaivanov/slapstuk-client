@@ -34,7 +34,7 @@ export const playlist = (
 ): ItemModel =>
   new ItemModel({
     id: title,
-    isOpen: true,
+    isOpen: false,
     title: title,
     image: image,
     type: "YTplaylist",

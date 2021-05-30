@@ -3,7 +3,7 @@ import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
 import { ClassName, cls, dom, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
-import { home, folder, video } from "../api/itemsBuilder";
+import { home, folder, video, playlist } from "../api/itemsBuilder";
 
 jest.mock("../infra/anim", () => ({
   animate: () => ({
@@ -40,7 +40,10 @@ describe("Having a loaded app", () => {
       const newItems = home([
         folder("first", [
           folder("subfirst1", [folder("subfirst1.child")]),
-          folder("subfirst2", [video("trip trance", "tripTranceYoutubeID")]),
+          folder("subfirst2", [
+            video("trip trance", "tripTranceYoutubeID"),
+            playlist("myPlaylist", "playlistImage"),
+          ]),
         ]),
         folder("second"),
         folder("third"),
@@ -88,6 +91,10 @@ describe("Having a loaded app", () => {
         expect(queryRow("subfirst2")).not.toBeInTheDocument();
       });
 
+      it("doesn't add image closed indicator (because first does not have an image)", () => {
+        expect(getRowIcon("first")).not.toHaveClass(cls.rowIconImageClosed);
+      });
+
       it("rotates chevron", () =>
         expect(getChevronFor("first")).not.toHaveClass(cls.rowChevronOpen));
 
@@ -111,6 +118,12 @@ describe("Having a loaded app", () => {
 
     it("trip trance item icon should not have any children", () =>
       expect(getRowIcon("trip trance")).toBeEmptyDOMElement());
+
+    it("playlist item icon should have closed outlet", () =>
+      expect(getRowIcon("myPlaylist")).toHaveClass(cls.rowIconImageClosed));
+
+    it("playlist chevron should be active, even thought item is empty (it is loaded from backend)", () =>
+      expect(getChevronFor("myPlaylist")).toHaveClass(cls.rowChevronActive));
 
     it(`Bug: hide subfolder, hide parent and open parent - subfolder won't open`, () => {
       expect(queryRow("subfirst1.child")).toBeInTheDocument();

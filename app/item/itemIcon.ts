@@ -50,7 +50,11 @@ const renderIcon = (item: ItemModel): Node => {
 
   const onVisibilityChange = (isOpen: boolean) => {
     dom.assignClassMap(chevron, { [cls.rowChevronOpen]: isOpen });
-    dom.assignClassMap(rowIcon, { [cls.rowIconOpen]: isOpen });
+    dom.assignClassMap(rowIcon, {
+      [cls.rowIconOpen]: isOpen,
+      [cls.rowIconImageClosed]:
+        !isOpen && !item.isEmptyNoNeedToLoad && item.hasImage,
+    });
   };
 
   onVisibilityChange(item.isOpen);
@@ -67,9 +71,6 @@ style.class(cls.rowIcon, {
   width: iconSize,
   minWidth: iconSize,
   height: iconSize,
-  //   backgroundSize: "cover",
-  //   backgroundPosition: `50% 50%`,
-  //   color: css.useVar(cssVar.ambient),
   backgroundSize: "cover",
   backgroundPosition: `50% 50%`,
 });
@@ -88,9 +89,28 @@ style.class(cls.rowCircleEmpty, {
   stroke: colorVars.itemInnerCircle,
 });
 
-style.class(cls.rowIconImageRound, { borderRadius: "50%" });
+const uniformShadow = (blur: number, spread: number, color: string) =>
+  `0 0 ${blur}px ${spread}px ${color}`;
 
-style.class(cls.rowIconImageSquare, { borderRadius: 4 });
+const inset = (spread: number, color: string) =>
+  `inset 0 0 0 ${spread}px ${color}`;
+
+style.class(cls.rowIconImageRound, {
+  borderRadius: "50%",
+  boxShadow: inset(2, colorVars.itemClosedImageInset),
+});
+
+style.class(cls.rowIconImageSquare, {
+  borderRadius: 4,
+  boxShadow: inset(2, colorVars.itemClosedImageInset),
+});
+
+style.class(cls.rowIconImageClosed, {
+  boxShadow:
+    inset(2, colorVars.itemClosedImageInset) +
+    ", " +
+    uniformShadow(2, 3, colorVars.itemClosedImageGlow),
+});
 
 const opaque: Styles = { opacity: 1 };
 const transparent: Styles = { opacity: 0 };

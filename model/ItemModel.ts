@@ -34,6 +34,9 @@ export class ItemModel {
   get isEmptyNoNeedToLoad() {
     //TODO: add loading indicator later
     const { children } = this.props;
+
+    if (this.isPlaylist || this.isChannel) return false;
+
     if (children) return children.items.length === 0;
     else return true;
   }
@@ -49,8 +52,8 @@ export class ItemModel {
     return this.props.children;
   }
 
-  get hasImage() {
-    return this.props.image || this.props.videoId;
+  get hasImage(): boolean {
+    return !!(this.props.image || this.props.videoId);
   }
 
   get isVideo() {

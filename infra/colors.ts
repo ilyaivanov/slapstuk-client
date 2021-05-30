@@ -55,6 +55,8 @@ const darkTheme = {
   rowHover: swatches.materialElevetion["01dp"],
   itemInnerCircle: swatches.grey["050"],
   itemOuterCircle: swatches.materialElevetion["12dp"],
+  itemClosedImageGlow: "rgba(255,255,255,0.45)",
+  itemClosedImageInset: "rgba(255,255,255,0.15)",
   scrollBar: swatches.materialElevetion["12dp"],
 
   //to figure out
@@ -68,14 +70,16 @@ const lightTheme: ThemeColors = {
   fadedTextOnBackground: "gray",
 
   //specific
-  background: "#EFF2F5",
+  // background: "#EFF2F5",
+  background: swatches.coolGrey["050"],
   header: "rgb(50,54,57)",
   childrenBorder: "#DCE0E2",
   rowHover: "rgba(0,0,0,0.03)",
   itemInnerCircle: "rgb(76, 81, 85)",
   itemOuterCircle: "rgba(0,0,0,0.08)",
+  itemClosedImageGlow: "rgba(0,0,0,0.5)",
+  itemClosedImageInset: "rgba(0,0,0,0.1)",
   scrollBar: "rgba(0,0,0,0.08)",
-
   //to figure out
   hover: "rgba(0,0,0,0.08)",
   primary: "rgb(76, 81, 85)",

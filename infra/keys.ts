@@ -23,6 +23,7 @@ export const cls = {
   rowIconOpen: "row-icon-open",
   rowIconImageSquare: "row-icon-image-square",
   rowIconImageRound: "row-icon-image-round",
+  rowIconImageClosed: "row-icon-image-closed",
   rowCircleInner: "row-circle-inner",
   rowCircleEmpty: "row-circle-empty",
   rowCircleOuter: "row-circle-outer",
