@@ -53,7 +53,7 @@ const darkTheme = {
   header: swatches.materialElevetion["02dp"],
   childrenBorder: "#4C5155",
   rowHover: swatches.materialElevetion["01dp"],
-  itemInnerCircle: swatches.grey["100"],
+  itemInnerCircle: swatches.grey["050"],
   itemOuterCircle: swatches.materialElevetion["12dp"],
 
   //to figure out
