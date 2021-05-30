@@ -19,7 +19,10 @@ export const cls = {
   rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",
   rowIcon: "row-icon",
+  rowIconOpen: "row-icon-open",
   rowCircleInner: "row-circle-inner",
+  rowCircleEmpty: "row-circle-empty",
+  rowCircleOuter: "row-circle-outer",
 
   //themes
   themeToggle: "theme-toggle",

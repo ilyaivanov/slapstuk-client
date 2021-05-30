@@ -38,3 +38,7 @@ export const spacings = {
   cardTextPadding: 4,
   cardTextBottomPadding: 2,
 };
+
+export const timings = {
+  itemCollapse: 200,
+};

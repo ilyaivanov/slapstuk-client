@@ -1,4 +1,13 @@
-import { cls, style, css, dom, levels, colorVars } from "../../infra";
+import {
+  cls,
+  style,
+  css,
+  dom,
+  levels,
+  colorVars,
+  timings,
+  anim,
+} from "../../infra";
 import { ItemModel } from "../../model/ItemModel";
 import renderIcon from "./itemIcon";
 
@@ -21,46 +30,64 @@ const renderRow = (item: ItemModel, level: number) =>
 const renderChildren = (item: ItemModel, level: number) => {
   //TODO: do not render children at all when closed
   //append to row instead of rendering this stuff
-  const container = dom.div({
+  const childContainer = dom.div({
     testId: "row-children-" + item.id,
     classNames: [cls.rowChildren],
   });
-  const assignChildren = (isOpen: boolean) => {
-    if (isOpen)
-      dom.setChildren(
-        container,
-        item
-          .mapChildren((child) => renderItem(child, level + 1))
-          .concat(
-            dom.div({
-              classNames: [
-                cls.rowChildrenBorder,
-                levels.childrenBorderForLevel(level),
-              ],
-            })
-          )
-      );
-    else {
+  const appendChildren = () => {
+    dom.setChildren(
+      childContainer,
+      item
+        .mapChildren((child) => renderItem(child, level + 1))
+        .concat(
+          dom.div({
+            classNames: [
+              cls.rowChildrenBorder,
+              levels.childrenBorderForLevel(level),
+            ],
+          })
+        )
+    );
+  };
+  if (item.isOpen) {
+    appendChildren();
+  }
+  const onVisiblityChange = (isOpenning: boolean) => {
+    if (isOpenning) {
+      appendChildren();
+      const height = childContainer.clientHeight;
+      anim.animate(childContainer, [{ height: 0 }, { height }], {
+        duration: timings.itemCollapse,
+        easing: "ease-out",
+      });
+    } else {
       item.unassignChildrenOpenCloseEvents();
-      dom.removeChildren(container);
+      const height = childContainer.clientHeight;
+      anim
+        .animate(childContainer, [{ height }, { height: 0 }], {
+          duration: timings.itemCollapse,
+          easing: "ease-out",
+        })
+        .addEventListener("finish", () => dom.removeChildren(childContainer));
     }
   };
 
-  item.onVisibilityChange(assignChildren);
-  assignChildren(item.isOpen);
+  item.onVisibilityChange(onVisiblityChange);
 
-  return container;
+  return childContainer;
 };
 
 style.class(cls.row, {
   display: "flex",
   alignItems: "center",
   cursor: "pointer",
+
   ...css.paddingVertical(4),
   onHover: { backgroundColor: colorVars.rowHover },
 });
 
 style.class(cls.rowChildren, {
+  overflow: "hidden",
   position: "relative",
 });
 

@@ -20,6 +20,11 @@ setTimeout(() => {
         Music
            Subfirst1
             Subfirst1_Child_one
+            Subfirst1_Child_two
+            Subfirst1_Child_three
+            Subfirst1_Child_four
+            Subfirst1_Child_five
+            Subfirst1_Child_six
            Subfirst2
         Software Development
         People

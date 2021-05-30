@@ -55,14 +55,9 @@ export const style = {
 };
 
 const cssToString = (selector: string, props: StylesWithVariables) => {
-  let values = Object.entries(props).map(([key, val]) => {
-    const isNotIgnored = !ignoredStyles[key];
-    return typeof val !== "undefined" &&
-      isNotIgnored &&
-      (typeof val == "number" || typeof val === "string")
-      ? `\t${camelToSnakeCase(key)}: ${convertVal(key, val)};`
-      : "";
-  });
+  let values = Object.entries(convertNumericStylesToProperCssOjbect(props)).map(
+    ([key, val]) => `\t${key}: ${val};`
+  );
   if (props.variables) {
     const variablesFormatted = Object.entries(props.variables).map(
       ([variableKey, variableValue]) => `\t--${variableKey}: ${variableValue};`
@@ -71,6 +66,18 @@ const cssToString = (selector: string, props: StylesWithVariables) => {
   }
   return `\n${selector}{\n${values.join("\n")}\n}\n`;
 };
+
+export const convertNumericStylesToProperCssOjbect = (styles: Styles): {} =>
+  Object.entries(styles).reduce((res, [key, val]) => {
+    const isNotIgnored = !ignoredStyles[key];
+    if (
+      typeof val !== "undefined" &&
+      isNotIgnored &&
+      (typeof val == "number" || typeof val === "string")
+    )
+      res[camelToSnakeCase(key)] = convertVal(key, val);
+    return res;
+  }, {} as Record<string, string>);
 
 //I'm using whitelist approach
 //in other words I add px to every number values expect 'opacity', 'flex' and other

@@ -1,4 +1,15 @@
-import { ClassName, cls, colorVars, dom, icons, style, svg } from "../../infra";
+import {
+  ClassName,
+  cls,
+  colorVars,
+  timings,
+  css,
+  dom,
+  icons,
+  style,
+  Styles,
+  svg,
+} from "../../infra";
 import { spacings } from "../../infra/constants";
 import { ItemModel } from "../../model/ItemModel";
 
@@ -13,19 +24,26 @@ const renderIcon = (item: ItemModel): Node => {
     },
     onClick: item.toggleVisibility,
   });
-  const assignChevronClass = (isOpen: boolean) =>
-    dom.assignClassMap(chevron, { "row-chevron-open": isOpen });
 
-  assignChevronClass(item.isOpen);
-  item.onVisibilityChange(assignChevronClass);
-  return dom.fragment([
-    chevron,
-    svg.svg({
-      className: cls.rowIcon,
-      viewBox: `0 0 ${iconSize} ${iconSize}`,
-      children: [createCircleAtCenter(cls.rowCircleInner, innerRadius)],
-    }),
-  ]);
+  const rowCircle = svg.svg({
+    className: cls.rowIcon,
+    viewBox: `0 0 ${iconSize} ${iconSize}`,
+    children: item.isEmptyNoNeedToLoad
+      ? [createCircleAtCenter(cls.rowCircleEmpty, innerRadius)]
+      : [
+          createCircleAtCenter(cls.rowCircleOuter, outerRadius),
+          createCircleAtCenter(cls.rowCircleInner, innerRadius),
+        ],
+  });
+
+  const onVisibilityChange = (isOpen: boolean) => {
+    dom.assignClassMap(chevron, { [cls.rowChevronOpen]: isOpen });
+    dom.assignClassMap(rowCircle, { [cls.rowIconOpen]: isOpen });
+  };
+
+  onVisibilityChange(item.isOpen);
+  item.onVisibilityChange(onVisibilityChange);
+  return dom.fragment([chevron, rowCircle]);
 };
 
 const createCircleAtCenter = (className: ClassName, r: number) =>
@@ -45,12 +63,24 @@ style.class(cls.rowIcon, {
 });
 
 style.class(cls.rowCircleInner, {
-  fill: colorVars.primary,
-  //   transition: css.transition({
-  //     opacity: timings.expandCollapseDuration,
-  //     fill: timings.themeSwitchDuration,
-  //   }),
+  fill: colorVars.itemInnerCircle,
 });
+
+style.class(cls.rowCircleOuter, {
+  fill: colorVars.itemOuterCircle,
+  opacity: 1,
+  transition: css.transition({ opacity: timings.itemCollapse }),
+});
+
+style.class(cls.rowCircleEmpty, {
+  fill: "transparent",
+  strokeWidth: 1.4,
+  stroke: colorVars.itemInnerCircle,
+});
+
+const opaque: Styles = { opacity: 1 };
+const transparent: Styles = { opacity: 0 };
+style.parentChild(cls.rowIconOpen, cls.rowCircleOuter, transparent);
 
 style.class(cls.rowChevron, {
   height: spacings.chevronSize,
@@ -58,15 +88,12 @@ style.class(cls.rowChevron, {
   borderRadius: spacings.chevronSize,
   //   marginTop: spacings.imageSize / 2 - spacings.chevronSize / 2,
   minWidth: spacings.chevronSize,
-  //   transition: css.transition({
-  //     transform: 200,
-  //     opacity: 100,
-  //   }),
   color: "#B8BCBF",
   opacity: 0,
   userSelect: "none",
   pointerEvents: "none",
   onHover: { color: "currentColor" },
+  transition: css.transition({ transform: timings.itemCollapse }),
 });
 
 style.class(cls.rowChevronOpen, {

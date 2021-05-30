@@ -5,6 +5,12 @@ import { renderApp } from "./app";
 import { Store } from "../model/store";
 import { buildItems } from "../api/itemsBuilder";
 
+jest.mock("../infra/anim", () => ({
+  animate: () => ({
+    addEventListener: (name: string, cb: any) => cb(),
+  }),
+}));
+
 describe("Having a loaded app", () => {
   let store: Store;
   beforeEach(() => {

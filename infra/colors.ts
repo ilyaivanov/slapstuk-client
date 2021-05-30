@@ -53,6 +53,8 @@ const darkTheme = {
   header: swatches.materialElevetion["02dp"],
   childrenBorder: "#4C5155",
   rowHover: swatches.materialElevetion["01dp"],
+  itemInnerCircle: swatches.grey["100"],
+  itemOuterCircle: swatches.materialElevetion["12dp"],
 
   //to figure out
   hover: swatches.materialElevetion["08dp"],
@@ -69,6 +71,8 @@ const lightTheme: ThemeColors = {
   header: "rgb(50,54,57)",
   childrenBorder: "#DCE0E2",
   rowHover: "rgba(0,0,0,0.03)",
+  itemInnerCircle: "rgb(76, 81, 85)",
+  itemOuterCircle: "rgba(0,0,0,0.08)",
 
   //to figure out
   hover: "rgba(0,0,0,0.08)",
