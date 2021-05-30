@@ -55,6 +55,7 @@ const darkTheme = {
   rowHover: swatches.materialElevetion["01dp"],
   itemInnerCircle: swatches.grey["050"],
   itemOuterCircle: swatches.materialElevetion["12dp"],
+  scrollBar: swatches.materialElevetion["12dp"],
 
   //to figure out
   hover: swatches.materialElevetion["08dp"],
@@ -73,6 +74,7 @@ const lightTheme: ThemeColors = {
   rowHover: "rgba(0,0,0,0.03)",
   itemInnerCircle: "rgb(76, 81, 85)",
   itemOuterCircle: "rgba(0,0,0,0.08)",
+  scrollBar: "rgba(0,0,0,0.08)",
 
   //to figure out
   hover: "rgba(0,0,0,0.08)",

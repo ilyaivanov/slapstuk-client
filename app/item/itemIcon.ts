@@ -25,25 +25,37 @@ const renderIcon = (item: ItemModel): Node => {
     onClick: item.toggleVisibility,
   });
 
-  const rowCircle = svg.svg({
+  const children = item.hasImage
+    ? []
+    : item.isEmptyNoNeedToLoad
+    ? [createCircleAtCenter(cls.rowCircleEmpty, innerRadius)]
+    : [
+        createCircleAtCenter(cls.rowCircleOuter, outerRadius),
+        createCircleAtCenter(cls.rowCircleInner, innerRadius),
+      ];
+
+  const rowIcon = svg.svg({
     className: cls.rowIcon,
     viewBox: `0 0 ${iconSize} ${iconSize}`,
-    children: item.isEmptyNoNeedToLoad
-      ? [createCircleAtCenter(cls.rowCircleEmpty, innerRadius)]
-      : [
-          createCircleAtCenter(cls.rowCircleOuter, outerRadius),
-          createCircleAtCenter(cls.rowCircleInner, innerRadius),
-        ],
+    children,
   });
+
+  if (item.hasImage) {
+    rowIcon.style.backgroundImage = `url(${item.previewImage})`;
+    dom.assignClassMap(rowIcon, {
+      [cls.rowIconImageSquare]: item.isPlaylist || item.isVideo,
+      [cls.rowIconImageRound]: item.isChannel,
+    });
+  }
 
   const onVisibilityChange = (isOpen: boolean) => {
     dom.assignClassMap(chevron, { [cls.rowChevronOpen]: isOpen });
-    dom.assignClassMap(rowCircle, { [cls.rowIconOpen]: isOpen });
+    dom.assignClassMap(rowIcon, { [cls.rowIconOpen]: isOpen });
   };
 
   onVisibilityChange(item.isOpen);
   item.onVisibilityChange(onVisibilityChange);
-  return dom.fragment([chevron, rowCircle]);
+  return dom.fragment([chevron, rowIcon]);
 };
 
 const createCircleAtCenter = (className: ClassName, r: number) =>
@@ -62,9 +74,7 @@ style.class(cls.rowIcon, {
   backgroundPosition: `50% 50%`,
 });
 
-style.class(cls.rowCircleInner, {
-  fill: colorVars.itemInnerCircle,
-});
+style.class(cls.rowCircleInner, { fill: colorVars.itemInnerCircle });
 
 style.class(cls.rowCircleOuter, {
   fill: colorVars.itemOuterCircle,
@@ -77,6 +87,10 @@ style.class(cls.rowCircleEmpty, {
   strokeWidth: 1.4,
   stroke: colorVars.itemInnerCircle,
 });
+
+style.class(cls.rowIconImageRound, { borderRadius: "50%" });
+
+style.class(cls.rowIconImageSquare, { borderRadius: 4 });
 
 const opaque: Styles = { opacity: 1 };
 const transparent: Styles = { opacity: 0 };

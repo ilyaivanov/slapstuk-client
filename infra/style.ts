@@ -121,7 +121,7 @@ export type Styles = Partial<{
   paddingRight: number;
   paddingLeft: number | string;
   paddingTop: number | string;
-  paddingBottom: number;
+  paddingBottom: number | string;
 
   //positioning
   position: "absolute" | "relative" | "fixed";

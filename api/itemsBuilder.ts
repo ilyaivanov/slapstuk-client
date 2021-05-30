@@ -17,3 +17,40 @@ export const folder = (title: string, children?: ItemModel[]): ItemModel =>
     type: "folder",
     children: children && new ItemCollection(children),
   });
+
+export const video = (title: string, videoId: string): ItemModel =>
+  new ItemModel({
+    id: title,
+    isOpen: true,
+    title: title,
+    videoId: videoId,
+    type: "YTvideo",
+  });
+
+export const playlist = (
+  title: string,
+  image: string,
+  children?: ItemModel[]
+): ItemModel =>
+  new ItemModel({
+    id: title,
+    isOpen: true,
+    title: title,
+    image: image,
+    type: "YTplaylist",
+    children: children && new ItemCollection(children),
+  });
+
+export const channel = (
+  title: string,
+  image: string,
+  children?: ItemModel[]
+): ItemModel =>
+  new ItemModel({
+    id: title,
+    isOpen: true,
+    title: title,
+    image: image,
+    type: "YTchannel",
+    children: children && new ItemCollection(children),
+  });

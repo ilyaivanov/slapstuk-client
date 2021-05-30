@@ -1,4 +1,4 @@
-import { cls, dom, style } from "../infra";
+import { cls, colorVars, css, dom, style } from "../infra";
 import { ItemModel } from "../model/ItemModel";
 import { Store } from "../model/store";
 import { renderItem } from "./item/item";
@@ -21,4 +21,13 @@ export default class MainTab {
 
 style.class(cls.mainTab, {
   flex: 1,
+  overflow: "overlay",
+  paddingBottom: "calc(100vh - 150px)",
+});
+
+css.createScrollStyles(cls.mainTab, {
+  scrollbar: { width: 8 },
+  thumb: {
+    backgroundColor: colorVars.scrollBar,
+  },
 });

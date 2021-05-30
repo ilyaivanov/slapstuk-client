@@ -3,7 +3,7 @@ import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
 import { ClassName, cls, dom, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
-import { home, folder } from "../api/itemsBuilder";
+import { home, folder, video } from "../api/itemsBuilder";
 
 jest.mock("../infra/anim", () => ({
   animate: () => ({
@@ -40,7 +40,7 @@ describe("Having a loaded app", () => {
       const newItems = home([
         folder("first", [
           folder("subfirst1", [folder("subfirst1.child")]),
-          folder("subfirst2"),
+          folder("subfirst2", [video("trip trance", "tripTranceYoutubeID")]),
         ]),
         folder("second"),
         folder("third"),
@@ -104,6 +104,14 @@ describe("Having a loaded app", () => {
       });
     });
 
+    it("trip trance item icon should have a background image", () =>
+      expect(getRowIcon("trip trance")).toHaveStyle(
+        "background-image: url(https://i.ytimg.com/vi/tripTranceYoutubeID/mqdefault.jpg)"
+      ));
+
+    it("trip trance item icon should not have any children", () =>
+      expect(getRowIcon("trip trance")).toBeEmptyDOMElement());
+
     it(`Bug: hide subfolder, hide parent and open parent - subfolder won't open`, () => {
       expect(queryRow("subfirst1.child")).toBeInTheDocument();
       fireEvent.click(getChevronFor("subfirst1"));
@@ -147,6 +155,8 @@ const getRow = (id: string) => getByTestId(document.body, "row-" + id);
 const queryRow = (id: string) => queryByTestId(document.body, "row-" + id);
 const rowTitle = (id: string) => getRowTitle(getRow(id));
 
+const getRowIcon = (id: string): HTMLElement =>
+  getElementWithClass(cls.rowIcon, getRow(id)) as HTMLElement;
 const getChevronFor = (id: string) =>
   getElementWithClass(cls.rowChevron, getRow(id));
 const searchTab = () => getElementWithClass(cls.searchTab);

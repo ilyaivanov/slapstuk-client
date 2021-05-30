@@ -45,6 +45,24 @@ export class ItemModel {
     return this.props.id;
   }
 
+  get children() {
+    return this.props.children;
+  }
+
+  get hasImage() {
+    return this.props.image || this.props.videoId;
+  }
+
+  get isVideo() {
+    return this.props.type === "YTvideo";
+  }
+  get isPlaylist() {
+    return this.props.type === "YTplaylist";
+  }
+  get isChannel() {
+    return this.props.type === "YTchannel";
+  }
+
   toggleVisibility = () => {
     this.props.isOpen = !this.props.isOpen;
     this.events.trigger("onVisibilityChange", this.props.isOpen);
@@ -53,8 +71,12 @@ export class ItemModel {
   onVisibilityChange = (cb: Action<boolean>) =>
     this.events.on("onVisibilityChange", cb);
 
-  get children() {
-    return this.props.children;
+  get previewImage() {
+    const { image, videoId } = this.props;
+    videoId; //?
+    if (videoId) return `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+    else if (image) return image;
+    else return "";
   }
 
   unassignChildrenOpenCloseEvents = () => {
