@@ -107,6 +107,15 @@ describe("Having a loaded app", () => {
       fireEvent.click(getChevronFor("subfirst1"));
       expect(queryRow("subfirst1.child")).toBeInTheDocument();
     });
+
+    //Memory leaks
+    it("when closing and opening first node total number of callbacks should not change (no memory leaks) ", () => {
+      const initialCallbackCount = store.home!.getTotalNumberOfListeners();
+      fireEvent.click(getChevronFor("first"));
+      fireEvent.click(getChevronFor("first"));
+      const res = store.home!.getTotalNumberOfListeners();
+      expect(res.callbacksCount).toEqual(initialCallbackCount.callbacksCount);
+    });
   });
 
   //Theme management

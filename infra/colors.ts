@@ -51,7 +51,10 @@ const darkTheme = {
   //specific
   background: "#121212",
   header: swatches.materialElevetion["02dp"],
+  childrenBorder: "#4C5155",
+  rowHover: swatches.materialElevetion["01dp"],
 
+  //to figure out
   hover: swatches.materialElevetion["08dp"],
   primary: swatches.grey["100"],
 };
@@ -64,7 +67,10 @@ const lightTheme: ThemeColors = {
   //specific
   background: "#EFF2F5",
   header: "rgb(50,54,57)",
+  childrenBorder: "#DCE0E2",
+  rowHover: "rgba(0,0,0,0.03)",
 
+  //to figure out
   hover: "rgba(0,0,0,0.08)",
   primary: "rgb(76, 81, 85)",
 };

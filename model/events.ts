@@ -23,6 +23,10 @@ class Events<T = Record<string, any>> {
 
     if (callbacks) this.events[eventName] = callbacks.filter((c) => c != cb);
   }
+
+  public offAll<TKey extends keyof T>(eventName: TKey) {
+    delete this.events[eventName];
+  }
 }
 
 export default Events;

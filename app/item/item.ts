@@ -1,4 +1,4 @@
-import { cls, style, css, dom, levels } from "../../infra";
+import { cls, style, css, dom, levels, colorVars } from "../../infra";
 import { ItemModel } from "../../model/ItemModel";
 import renderIcon from "./itemIcon";
 
@@ -25,22 +25,26 @@ const renderChildren = (item: ItemModel, level: number) => {
     testId: "row-children-" + item.id,
     classNames: [cls.rowChildren],
   });
-  const assignChildren = (isOpen: boolean) =>
-    isOpen
-      ? dom.setChildren(
-          container,
-          item
-            .mapChildren((child) => renderItem(child, level + 1))
-            .concat(
-              dom.div({
-                classNames: [
-                  cls.rowChildrenBorder,
-                  levels.childrenBorderForLevel(level),
-                ],
-              })
-            )
-        )
-      : dom.removeChildren(container);
+  const assignChildren = (isOpen: boolean) => {
+    if (isOpen)
+      dom.setChildren(
+        container,
+        item
+          .mapChildren((child) => renderItem(child, level + 1))
+          .concat(
+            dom.div({
+              classNames: [
+                cls.rowChildrenBorder,
+                levels.childrenBorderForLevel(level),
+              ],
+            })
+          )
+      );
+    else {
+      item.unassignChildrenOpenCloseEvents();
+      dom.removeChildren(container);
+    }
+  };
 
   item.onVisibilityChange(assignChildren);
   assignChildren(item.isOpen);
@@ -53,9 +57,7 @@ style.class(cls.row, {
   alignItems: "center",
   cursor: "pointer",
   ...css.paddingVertical(4),
-  onHover: {
-    backgroundColor: "rgba(0, 0, 0, 0.03)",
-  },
+  onHover: { backgroundColor: colorVars.rowHover },
 });
 
 style.class(cls.rowChildren, {
@@ -67,7 +69,7 @@ style.class(cls.rowChildrenBorder, {
   width: 2,
   top: 0,
   bottom: 0,
-  backgroundColor: "#DCE0E2",
+  backgroundColor: colorVars.childrenBorder,
 });
 
 style.class(cls.rowTitle, {

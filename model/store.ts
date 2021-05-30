@@ -10,7 +10,7 @@ type EventsTypes = {
 export type Theme = "dark" | "light";
 
 export class Store {
-  private home?: ItemModel;
+  home?: ItemModel;
   private events = new Events<EventsTypes>();
   isSearchVisible = false;
 

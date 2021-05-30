@@ -45,7 +45,6 @@ style.class(cls.rowIcon, {
 });
 
 style.class(cls.rowCircleInner, {
-  //   fill: css.useVar(cssVar.accent),
   fill: colorVars.primary,
   //   transition: css.transition({
   //     opacity: timings.expandCollapseDuration,
