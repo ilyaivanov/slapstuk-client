@@ -41,4 +41,5 @@ export const spacings = {
 
 export const timings = {
   itemCollapse: 200,
+  itemExpand: 250,
 };

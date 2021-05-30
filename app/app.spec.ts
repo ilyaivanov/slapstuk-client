@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
-import { ClassName, cls, levels } from "../infra";
+import { ClassName, cls, dom, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
-import { buildItems } from "../api/itemsBuilder";
+import { home, folder } from "../api/itemsBuilder";
 
 jest.mock("../infra/anim", () => ({
   animate: () => ({
@@ -15,8 +15,7 @@ describe("Having a loaded app", () => {
   let store: Store;
   beforeEach(() => {
     store = new Store();
-    document.body.innerHTML = ``;
-    document.body.appendChild(renderApp(store));
+    dom.setChild(document.body, renderApp(store));
   });
 
   it("by default search tab is hidden", () =>
@@ -38,16 +37,16 @@ describe("Having a loaded app", () => {
 
   describe("when loading items from a backend (dummy data loader for tests)", () => {
     beforeEach(() => {
-      const items = buildItems(`
-      HOME
-        first
-          subfirst1
-            subfirst1.child
-          subfirst2
-        second
-        third
-      `);
-      store.itemsLoaded(items);
+      const newItems = home([
+        folder("first", [
+          folder("subfirst1", [folder("subfirst1.child")]),
+          folder("subfirst2"),
+        ]),
+        folder("second"),
+        folder("third"),
+      ]);
+
+      store.itemsLoaded(newItems);
     });
     it("it should show that rows", () => {
       expect(getRow("first")).toBeInTheDocument();

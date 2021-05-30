@@ -22,8 +22,8 @@ export class Store {
   onVisiblityChange = (cb: Action<boolean>) =>
     this.events.on("onSearchVisibilityChange", cb);
 
-  itemsLoaded = (items: Items) => {
-    this.home = createModel(items["HOME"], items);
+  itemsLoaded = (home: ItemModel) => {
+    this.home = home;
     this.events.trigger("onHomeLoaded", this.home);
   };
 

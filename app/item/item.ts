@@ -57,7 +57,7 @@ const renderChildren = (item: ItemModel, level: number) => {
       appendChildren();
       const height = childContainer.clientHeight;
       anim.animate(childContainer, [{ height: 0 }, { height }], {
-        duration: timings.itemCollapse,
+        duration: timings.itemExpand,
         easing: "ease-out",
       });
     } else {

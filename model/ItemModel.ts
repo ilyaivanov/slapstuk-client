@@ -33,7 +33,9 @@ export class ItemModel {
   }
   get isEmptyNoNeedToLoad() {
     //TODO: add loading indicator later
-    return this.props.children?.items.length == 0;
+    const { children } = this.props;
+    if (children) return children.items.length === 0;
+    else return true;
   }
   get title() {
     return this.props.title;

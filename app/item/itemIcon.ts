@@ -20,7 +20,7 @@ const renderIcon = (item: ItemModel): Node => {
   const chevron = icons.chevron({
     className: cls.rowChevron,
     classMap: {
-      "row-chevron-active": !item.isEmptyNoNeedToLoad,
+      [cls.rowChevronActive]: !item.isEmptyNoNeedToLoad,
     },
     onClick: item.toggleVisibility,
   });

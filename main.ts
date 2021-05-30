@@ -1,7 +1,7 @@
 import "./infra/normalize";
 import { renderApp } from "./app/app";
 import { Store } from "./model/store";
-import { buildItems } from "./api/itemsBuilder";
+import { home, folder } from "./api/itemsBuilder";
 import { initThemes } from "./infra";
 import { initItemModelToMemoryLeakDetector } from "./model/callbackWatcher";
 
@@ -14,24 +14,25 @@ initItemModelToMemoryLeakDetector(store);
 //make sure we can render without data
 //fix loading after I'm done with a list
 setTimeout(() => {
-  store.itemsLoaded(
-    buildItems(`
-    HOME
-        Music
-           Subfirst1
-            Subfirst1_Child_one
-            Subfirst1_Child_two
-            Subfirst1_Child_three
-            Subfirst1_Child_four
-            Subfirst1_Child_five
-            Subfirst1_Child_six
-           Subfirst2
-        Software Development
-        People
-        Standup
-        Channels
-        General Talks
-        Deep_work
-    `)
-  );
+  store.itemsLoaded(newItems);
 }, 10);
+
+const newItems = home([
+  folder("Music", [
+    folder("Electro", [
+      folder("Trance this"),
+      folder("Trance that"),
+      folder("Trance there"),
+      folder("Trance and here"),
+      folder("Trance and there"),
+    ]),
+    folder("Metal"),
+    folder("Ambient"),
+    folder("Piano"),
+  ]),
+  folder("Software Development"),
+  folder("People"),
+  folder("Channels"),
+  folder("General Talks"),
+  folder("Deep work"),
+]);
