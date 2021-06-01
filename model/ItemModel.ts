@@ -1,3 +1,4 @@
+import { loadItemChildren } from "../api/itemsLoader";
 import Events from "./events";
 
 type ItemAttributes = {
@@ -8,10 +9,12 @@ type ItemAttributes = {
   type: string;
   image?: string;
   videoId?: string;
+  isLoading?: boolean;
 };
 
 type ItemEvents = {
   onVisibilityChange: boolean;
+  onItemLoaded: ItemModel;
 };
 
 export class ItemModel {
@@ -32,7 +35,6 @@ export class ItemModel {
     return this.props.isOpen;
   }
   get isEmptyNoNeedToLoad() {
-    //TODO: add loading indicator later
     const { children } = this.props;
 
     if (this.isPlaylist || this.isChannel) return false;
@@ -40,6 +42,20 @@ export class ItemModel {
     if (children) return children.items.length === 0;
     else return true;
   }
+  get isNeededToInitiateChildrenFetch() {
+    const { children } = this.props;
+    if (this.isLoading) return false;
+
+    if (this.isPlaylist || this.isChannel) {
+      if (children) return children.items.length === 0;
+      else return true;
+    }
+    return false;
+  }
+  get isLoading() {
+    return this.props.isLoading;
+  }
+
   get title() {
     return this.props.title;
   }
@@ -67,6 +83,10 @@ export class ItemModel {
   }
 
   toggleVisibility = () => {
+    if (!this.props.isOpen && this.isNeededToInitiateChildrenFetch) {
+      this.props.isLoading = true;
+      loadItemChildren(this);
+    }
     this.props.isOpen = !this.props.isOpen;
     this.events.trigger("onVisibilityChange", this.props.isOpen);
   };
@@ -74,17 +94,25 @@ export class ItemModel {
   onVisibilityChange = (cb: Action<boolean>) =>
     this.events.on("onVisibilityChange", cb);
 
+  onItemLoaded = (cb: Action<ItemModel>) => this.events.on("onItemLoaded", cb);
+
   get previewImage() {
     const { image, videoId } = this.props;
-    videoId; //?
     if (videoId) return `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
     else if (image) return image;
     else return "";
   }
 
+  itemsLoaded = (items: ItemModel[]) => {
+    this.props.children = new ItemCollection(items);
+    this.props.isLoading = false;
+    this.events.trigger("onItemLoaded", this);
+  };
+
   unassignChildrenOpenCloseEvents = () => {
     const unassign = (item: ItemModel) => {
       item.events.offAll("onVisibilityChange");
+      item.events.offAll("onItemLoaded");
       item.forEachChild(unassign);
     };
     this.forEachChild(unassign);

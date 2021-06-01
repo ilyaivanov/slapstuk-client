@@ -70,7 +70,6 @@ const lightTheme: ThemeColors = {
   fadedTextOnBackground: "gray",
 
   //specific
-  // background: "#EFF2F5",
   background: swatches.coolGrey["050"],
   header: "rgb(50,54,57)",
   childrenBorder: "#DCE0E2",

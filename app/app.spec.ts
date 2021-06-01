@@ -1,9 +1,10 @@
 import "@testing-library/jest-dom";
-import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
-import { ClassName, cls, dom, levels } from "../infra";
+import { fireEvent } from "@testing-library/dom";
+import { cls, dom, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
 import { home, folder, video, playlist } from "../api/itemsBuilder";
+import * as page from "./pageObjects";
 
 jest.mock("../infra/anim", () => ({
   animate: () => ({
@@ -19,19 +20,19 @@ describe("Having a loaded app", () => {
   });
 
   it("by default search tab is hidden", () =>
-    expect(searchTab()).toHaveClass(cls.searchTab_Hidden));
+    expect(page.searchTab()).toHaveClass(cls.searchTab_Hidden));
 
   describe("pressing ctrl+2", () => {
-    beforeEach(() => shortcuts.ctrlAnd2());
+    beforeEach(() => page.keyboardShortcuts.ctrlAnd2());
 
     it("shows search tab", () =>
-      expect(searchTab()).not.toHaveClass(cls.searchTab_Hidden));
+      expect(page.searchTab()).not.toHaveClass(cls.searchTab_Hidden));
 
     describe("pressing ctrl+2 again", () => {
-      beforeEach(() => shortcuts.ctrlAnd2());
+      beforeEach(() => page.keyboardShortcuts.ctrlAnd2());
 
       it("hides search tab", () =>
-        expect(searchTab()).toHaveClass(cls.searchTab_Hidden));
+        expect(page.searchTab()).toHaveClass(cls.searchTab_Hidden));
     });
   });
 
@@ -52,93 +53,103 @@ describe("Having a loaded app", () => {
       store.itemsLoaded(newItems);
     });
     it("it should show that rows", () => {
-      expect(getRow("first")).toBeInTheDocument();
-      expect(getRow("second")).toBeInTheDocument();
-      expect(getRow("third")).toBeInTheDocument();
+      expect(page.getRow("first")).toBeInTheDocument();
+      expect(page.getRow("second")).toBeInTheDocument();
+      expect(page.getRow("third")).toBeInTheDocument();
     });
 
     it("first row should have level 0", () => {
-      expect(getRow("first")).toHaveClass(levels.rowForLevel(0));
+      expect(page.getRow("first")).toHaveClass(levels.rowForLevel(0));
     });
 
     it("title of first should be first", () => {
-      expect(rowTitle("first")).toEqual("first");
+      expect(page.rowTitle("first")).toEqual("first");
     });
 
     it("shows subfirst1 and subfirst2 as child of first", () => {
-      expect(getRow("subfirst1")).toBeInTheDocument();
-      expect(getRow("subfirst2")).toBeInTheDocument();
+      expect(page.getRow("subfirst1")).toBeInTheDocument();
+      expect(page.getRow("subfirst2")).toBeInTheDocument();
     });
 
     it("subfirst1 row should have level 1", () => {
-      expect(getRow("subfirst1")).toHaveClass(levels.rowForLevel(1));
+      expect(page.getRow("subfirst1")).toHaveClass(levels.rowForLevel(1));
     });
 
     it("first chevron is not rotated", () =>
-      expect(getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
+      expect(page.getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
 
     it("first item chevron is active (it has children)", () =>
-      expect(getChevronFor("first")).toHaveClass(cls.rowChevronActive));
+      expect(page.getChevronFor("first")).toHaveClass(cls.rowChevronActive));
 
     it("second item chevron is inactive (it has no children)", () =>
-      expect(getChevronFor("second")).not.toHaveClass(cls.rowChevronActive));
+      expect(page.getChevronFor("second")).not.toHaveClass(
+        cls.rowChevronActive
+      ));
 
     describe("toggling first", () => {
-      beforeEach(() => fireEvent.click(getChevronFor("first")));
+      beforeEach(() => fireEvent.click(page.getChevronFor("first")));
 
       it("hides it's children", () => {
-        expect(queryRow("subfirst1")).not.toBeInTheDocument();
-        expect(queryRow("subfirst2")).not.toBeInTheDocument();
+        expect(page.queryRow("subfirst1")).not.toBeInTheDocument();
+        expect(page.queryRow("subfirst2")).not.toBeInTheDocument();
       });
 
       it("doesn't add image closed indicator (because first does not have an image)", () => {
-        expect(getRowIcon("first")).not.toHaveClass(cls.rowIconImageClosed);
+        expect(page.getRowIcon("first")).not.toHaveClass(
+          cls.rowIconImageClosed
+        );
       });
 
       it("rotates chevron", () =>
-        expect(getChevronFor("first")).not.toHaveClass(cls.rowChevronOpen));
+        expect(page.getChevronFor("first")).not.toHaveClass(
+          cls.rowChevronOpen
+        ));
 
       describe("toggling first again", () => {
-        beforeEach(() => fireEvent.click(getChevronFor("first")));
+        beforeEach(() => fireEvent.click(page.getChevronFor("first")));
 
         it("hides it's children", () => {
-          expect(getRow("subfirst1")).toBeInTheDocument();
-          expect(getRow("subfirst2")).toBeInTheDocument();
+          expect(page.getRow("subfirst1")).toBeInTheDocument();
+          expect(page.getRow("subfirst2")).toBeInTheDocument();
         });
 
         it("moves chevron back", () =>
-          expect(getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
+          expect(page.getChevronFor("first")).toHaveClass(cls.rowChevronOpen));
       });
     });
 
     it("trip trance item icon should have a background image", () =>
-      expect(getRowIcon("trip trance")).toHaveStyle(
+      expect(page.getRowIcon("trip trance")).toHaveStyle(
         "background-image: url(https://i.ytimg.com/vi/tripTranceYoutubeID/mqdefault.jpg)"
       ));
 
     it("trip trance item icon should not have any children", () =>
-      expect(getRowIcon("trip trance")).toBeEmptyDOMElement());
+      expect(page.getRowIcon("trip trance")).toBeEmptyDOMElement());
 
     it("playlist item icon should have closed outlet", () =>
-      expect(getRowIcon("myPlaylist")).toHaveClass(cls.rowIconImageClosed));
+      expect(page.getRowIcon("myPlaylist")).toHaveClass(
+        cls.rowIconImageClosed
+      ));
 
     it("playlist chevron should be active, even thought item is empty (it is loaded from backend)", () =>
-      expect(getChevronFor("myPlaylist")).toHaveClass(cls.rowChevronActive));
+      expect(page.getChevronFor("myPlaylist")).toHaveClass(
+        cls.rowChevronActive
+      ));
 
     it(`Bug: hide subfolder, hide parent and open parent - subfolder won't open`, () => {
-      expect(queryRow("subfirst1.child")).toBeInTheDocument();
-      fireEvent.click(getChevronFor("subfirst1"));
-      fireEvent.click(getChevronFor("first"));
-      fireEvent.click(getChevronFor("first"));
-      fireEvent.click(getChevronFor("subfirst1"));
-      expect(queryRow("subfirst1.child")).toBeInTheDocument();
+      expect(page.queryRow("subfirst1.child")).toBeInTheDocument();
+      fireEvent.click(page.getChevronFor("subfirst1"));
+      fireEvent.click(page.getChevronFor("first"));
+      fireEvent.click(page.getChevronFor("first"));
+      fireEvent.click(page.getChevronFor("subfirst1"));
+      expect(page.queryRow("subfirst1.child")).toBeInTheDocument();
     });
 
     //Memory leaks
     it("when closing and opening first node total number of callbacks should not change (no memory leaks) ", () => {
       const initialCallbackCount = store.home!.getTotalNumberOfListeners();
-      fireEvent.click(getChevronFor("first"));
-      fireEvent.click(getChevronFor("first"));
+      fireEvent.click(page.getChevronFor("first"));
+      fireEvent.click(page.getChevronFor("first"));
       const res = store.home!.getTotalNumberOfListeners();
       expect(res.callbacksCount).toEqual(initialCallbackCount.callbacksCount);
     });
@@ -146,61 +157,17 @@ describe("Having a loaded app", () => {
 
   //Theme management
   it("by default theme is dark", () =>
-    expect(page()).toHaveClass(cls.darkTheme));
+    expect(page.page()).toHaveClass(cls.darkTheme));
 
   describe("toggling theme", () => {
-    beforeEach(() => fireEvent.click(themeToggler()));
+    beforeEach(() => fireEvent.click(page.themeToggler()));
     it("switches it to light", () =>
-      expect(page()).toHaveClass(cls.lightTheme));
+      expect(page.page()).toHaveClass(cls.lightTheme));
 
     describe("toggling theme again", () => {
-      beforeEach(() => fireEvent.click(themeToggler()));
+      beforeEach(() => fireEvent.click(page.themeToggler()));
       it("switches it to dark", () =>
-        expect(page()).toHaveClass(cls.darkTheme));
+        expect(page.page()).toHaveClass(cls.darkTheme));
     });
   });
 });
-
-const getRowTitle = (row: Element) =>
-  getElementWithClass(cls.rowTitle, row).textContent;
-
-const getRow = (id: string) => getByTestId(document.body, "row-" + id);
-const queryRow = (id: string) => queryByTestId(document.body, "row-" + id);
-const rowTitle = (id: string) => getRowTitle(getRow(id));
-
-const getRowIcon = (id: string): HTMLElement =>
-  getElementWithClass(cls.rowIcon, getRow(id)) as HTMLElement;
-const getChevronFor = (id: string) =>
-  getElementWithClass(cls.rowChevron, getRow(id));
-const searchTab = () => getElementWithClass(cls.searchTab);
-const page = () => getElementWithClass(cls.page);
-const themeToggler = () => getElementWithClass(cls.themeToggle);
-
-const shortcuts = {
-  ctrlAnd2: () =>
-    fireEvent.keyDown(document, { code: "Digit2", ctrlKey: true }),
-  ctrlAnd1: () =>
-    fireEvent.keyDown(document, { code: "Digit1", ctrlKey: true }),
-};
-
-//TESTS INFRA
-//this is interesting, since method type getElementsByClassName is defined separately in Document and Element,
-//I can't just type context with Element or Document, because Document is not an Element
-type ContextToFindClasses = {
-  getElementsByClassName: typeof document.getElementsByClassName;
-};
-const getElementWithClass = (
-  className: ClassName,
-  context: ContextToFindClasses = document
-) => {
-  const elements = context.getElementsByClassName(className);
-
-  if (elements.length === 0)
-    throw new Error(`Can't find any element with class ${className}`);
-  if (elements.length > 1)
-    throw new Error(
-      `Found multiple elements with ${className}. I don't want to silently return first one, use a separate method for that`
-    );
-
-  return elements[0];
-};

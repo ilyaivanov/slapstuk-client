@@ -10,6 +10,7 @@ import {
 } from "../../infra";
 import { ItemModel } from "../../model/ItemModel";
 import renderIcon from "./itemIcon";
+import { loadItemChildren } from "../../api/itemsLoader";
 
 export const renderItem = (item: ItemModel, level = 0): Node =>
   dom.fragment([renderRow(item, level), renderChildren(item, level)]);
@@ -34,7 +35,7 @@ const renderChildren = (item: ItemModel, level: number) => {
     testId: "row-children-" + item.id,
     classNames: [cls.rowChildren],
   });
-  const appendChildren = () => {
+  const assignChildren = () => {
     dom.setChildren(
       childContainer,
       item
@@ -50,29 +51,55 @@ const renderChildren = (item: ItemModel, level: number) => {
     );
   };
   if (item.isOpen) {
-    appendChildren();
+    assignChildren();
   }
-  const onVisiblityChange = (isOpenning: boolean) => {
-    if (isOpenning) {
-      appendChildren();
-      const height = childContainer.clientHeight;
-      anim.animate(childContainer, [{ height: 0 }, { height }], {
-        duration: timings.itemExpand,
+  const expandContainer = (fromHeight = 0) => {
+    const height = childContainer.clientHeight;
+    anim.animate(childContainer, [{ height: fromHeight }, { height }], {
+      duration: timings.itemExpand,
+      easing: "ease-out",
+    });
+  };
+  const collapseContainer = () => {
+    const height = childContainer.clientHeight;
+    anim
+      .animate(childContainer, [{ height }, { height: 0 }], {
+        duration: timings.itemCollapse,
         easing: "ease-out",
-      });
+      })
+      .addEventListener("finish", () => dom.removeChildren(childContainer));
+  };
+
+  const onVisiblityChange = (isOpenning: boolean) => {
+    if (isOpenning && item.isLoading) {
+      dom.setChild(
+        childContainer,
+        dom.span({
+          classNames: [cls.rowLoading, levels.rowForLevel(level)],
+          text: "Loading...",
+          testId: "row-loading-" + item.id,
+        })
+      );
+      expandContainer();
+    } else if (isOpenning) {
+      assignChildren();
+      expandContainer();
     } else {
       item.unassignChildrenOpenCloseEvents();
-      const height = childContainer.clientHeight;
-      anim
-        .animate(childContainer, [{ height }, { height: 0 }], {
-          duration: timings.itemCollapse,
-          easing: "ease-out",
-        })
-        .addEventListener("finish", () => dom.removeChildren(childContainer));
+      collapseContainer();
+    }
+  };
+
+  const onItemLoaded = () => {
+    if (item.isOpen) {
+      const currentHeight = childContainer.clientHeight;
+      assignChildren();
+      expandContainer(currentHeight);
     }
   };
 
   item.onVisibilityChange(onVisiblityChange);
+  item.onItemLoaded(onItemLoaded);
 
   return childContainer;
 };
@@ -101,4 +128,9 @@ style.class(cls.rowChildrenBorder, {
 
 style.class(cls.rowTitle, {
   paddingBottom: 3,
+});
+
+style.class(cls.rowLoading, {
+  fontStyle: "italic",
+  marginLeft: 60,
 });

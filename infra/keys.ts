@@ -17,6 +17,7 @@ export const cls = {
   rowChevronActive: "row-chevron-active",
 
   rowChildren: "row-children",
+  rowLoading: "row-loading",
   rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",
   rowIcon: "row-icon",
