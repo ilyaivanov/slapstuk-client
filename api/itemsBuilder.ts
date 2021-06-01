@@ -8,6 +8,14 @@ export const home = (children: ItemModel[]): ItemModel =>
     type: "folder",
     children: new ItemCollection(children),
   });
+export const search = (children: ItemModel[]): ItemModel =>
+  new ItemModel({
+    id: "SEARCH",
+    isOpen: true,
+    title: "Search",
+    type: "search",
+    children: new ItemCollection(children),
+  });
 
 export const folder = (title: string, children?: ItemModel[]): ItemModel =>
   new ItemModel({

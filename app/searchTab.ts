@@ -1,13 +1,39 @@
+import { searchItems } from "../api/itemsLoader";
 import { cls, css, dom, style } from "../infra";
 import { Store } from "../model/store";
+import { renderItem } from "./item/item";
 
 export default class SearchTab {
-  el = dom.div({ classNames: [cls.searchTab] });
+  input = dom.input({
+    testId: "search-input",
+    onKeyDown: (e) => {
+      if (e.key === "Enter") {
+        searchItems(this.store, e.currentTarget.value);
+        dom.setChild(
+          this.searchResults,
+          dom.div({ children: ["Loading..."], testId: "search-loading" })
+        );
+      }
+    },
+  });
+
+  searchResults = dom.div({});
+
+  el = dom.div({
+    classNames: [cls.searchTab],
+    children: [this.input, this.searchResults],
+  });
 
   constructor(private store: Store) {
     this.updateSearch(store.isSearchVisible);
     store.onVisiblityChange(this.updateSearch);
     document.addEventListener("keydown", this.onKeyDown);
+    store.onSearchLoaded((search) => {
+      dom.setChildren(
+        this.searchResults,
+        search.mapChildren((item) => renderItem(item))
+      );
+    });
   }
 
   onKeyDown = (e: KeyboardEvent) => {
@@ -22,6 +48,9 @@ export default class SearchTab {
       e.preventDefault();
 
       this.store.toggleVisibility();
+      //I'm using setTimeout here because focus method scrolls to element,
+      //which breaks my transition
+      if (this.store.isSearchVisible) setTimeout(() => this.input.focus(), 200);
     }
   };
 

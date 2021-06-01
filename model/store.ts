@@ -3,6 +3,7 @@ import { ItemCollection, ItemModel } from "./ItemModel";
 
 type EventsTypes = {
   onHomeLoaded: ItemModel;
+  onSearchLoaded: ItemModel;
   onSearchVisibilityChange: boolean;
   onThemeChange: Theme;
 };
@@ -11,6 +12,7 @@ export type Theme = "dark" | "light";
 
 export class Store {
   home?: ItemModel;
+  search?: ItemModel;
   private events = new Events<EventsTypes>();
   isSearchVisible = false;
 
@@ -28,6 +30,14 @@ export class Store {
   };
 
   onHomeLoaded = (cb: Action<ItemModel>) => this.events.on("onHomeLoaded", cb);
+
+  onSearchLoaded = (cb: Action<ItemModel>) =>
+    this.events.on("onSearchLoaded", cb);
+
+  searchIsDone = (search: ItemModel) => {
+    this.search = search;
+    this.events.trigger("onSearchLoaded", search);
+  };
 
   theme = "dark" as Theme;
   toggleTheme = () => {

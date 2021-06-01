@@ -27,6 +27,9 @@ export const searchTab = () => getElementWithClass(cls.searchTab);
 export const page = () => getElementWithClass(cls.page);
 export const themeToggler = () => getElementWithClass(cls.themeToggle);
 
+export const searchInput = () => getByTestId(document.body, "search-input");
+export const searchLoading = () =>
+  queryByTestId(document.body, "search-loading");
 export const getLoadingIndicator = (id: string) =>
   getByTestId(document.body, "row-loading-" + id);
 

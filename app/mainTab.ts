@@ -20,6 +20,7 @@ export default class MainTab {
 }
 
 style.class(cls.mainTab, {
+  paddingTop: 45,
   flex: 1,
   overflow: "overlay",
   paddingBottom: "calc(100vh - 150px)",

@@ -4,9 +4,9 @@ import { cls, dom } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
 import * as page from "./pageObjects";
-import { home, playlist, video } from "../api/itemsBuilder";
+import { home, playlist, search, video } from "../api/itemsBuilder";
 import { ItemModel } from "../model/ItemModel";
-import { loadItemChildren } from "../api/itemsLoader";
+import { loadItemChildren, searchItems } from "../api/itemsLoader";
 
 jest.mock("../infra/anim", () => ({
   animate: () => ({
@@ -16,6 +16,7 @@ jest.mock("../infra/anim", () => ({
 
 jest.mock("../api/itemsLoader", () => ({
   loadItemChildren: jest.fn(),
+  searchItems: jest.fn(),
 }));
 
 describe("Having a loaded app", () => {
@@ -69,6 +70,45 @@ describe("Having a loaded app", () => {
       fireEvent.click(page.getChevronFor("MyPlaylist"));
       fireEvent.click(page.getChevronFor("MyPlaylist"));
       expect(loadItemChildren).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Focusing on search, entering 'asura' and pressing enter", () => {
+    beforeEach(() => page.keyboardShortcuts.ctrlAnd2());
+
+    it("doesn't show loading spinner", () =>
+      expect(page.searchLoading()).not.toBeInTheDocument());
+
+    describe("entering asura in input and hitting enter", () => {
+      beforeEach(() => {
+        fireEvent.input(page.searchInput(), { target: { value: "asura" } });
+        fireEvent.keyDown(page.searchInput(), { key: "Enter" });
+      });
+
+      it("initiates search request", () =>
+        expect(searchItems).toHaveBeenCalledWith(store, "asura"));
+
+      it("shows loading indicator at search", () =>
+        expect(page.searchLoading()).toBeInTheDocument());
+
+      describe("when search results are ready", () => {
+        beforeEach(() => {
+          store.searchIsDone(
+            search([
+              video("asura video 1", "1"),
+              video("asura video 2", "2"),
+              video("asura video 3", "3"),
+            ])
+          );
+        });
+        it("hides search loading indicator", () =>
+          expect(page.searchLoading()).not.toBeInTheDocument());
+
+        it("shows searched items in search", () => {
+          expect(page.getRow("asura video 1")).toBeInTheDocument();
+          expect(page.getRow("asura video 2")).toBeInTheDocument();
+        });
+      });
     });
   });
 });
