@@ -24,6 +24,7 @@ export const cls = {
   rowLoading: "row-loading",
   rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",
+  rowTitleInput: "row-title-input",
   rowIcon: "row-icon",
   rowIconOpen: "row-icon-open",
   rowIconImageSquare: "row-icon-image-square",

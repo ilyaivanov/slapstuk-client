@@ -31,6 +31,40 @@ const renderRow = (item: ItemModel, level: number) => {
       [cls.rowSelected]: isSelected,
     })
   );
+  item.onRename((isRenaming) => {
+    if (isRenaming) {
+      const span = row.getElementsByClassName(cls.rowTitle)[0];
+      if (span) {
+        span.remove();
+        const input = dom.input({
+          className: cls.rowTitleInput,
+          value: item.title,
+          onKeyDown: (e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+            if (e.key === "Escape") {
+              item.cancelRename();
+            }
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight")
+              e.stopPropagation();
+          },
+          onBlur: (e) => item.finalizeRename(e.currentTarget.value),
+        });
+        row.appendChild(input);
+        input.focus();
+      }
+    } else {
+      const input = row.getElementsByClassName(cls.rowTitleInput)[0];
+      if (input && input.isConnected) {
+        input.remove();
+        row.appendChild(
+          dom.span({
+            text: item.title,
+            className: cls.rowTitle,
+          })
+        );
+      }
+    }
+  });
   return row;
 };
 

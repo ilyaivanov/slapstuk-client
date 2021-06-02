@@ -1,10 +1,10 @@
-import { cls, dom } from "../infra";
-import { renderApp } from "./app";
-import { Store } from "../model/store";
+import { cls, dom } from "../../infra";
+import { renderApp } from "../app";
+import { Store } from "../../model/store";
 import * as page from "./pageObjects";
-import { home, playlist, search, video } from "../api/itemsBuilder";
-import { ItemModel } from "../model/ItemModel";
-import { loadItemChildren, searchItems } from "../api/itemsLoader";
+import { home, playlist, search, video } from "../../api/itemsBuilder";
+import { ItemModel } from "../../model/ItemModel";
+import { loadItemChildren, searchItems } from "../../api/itemsLoader";
 
 describe("Having a loaded app", () => {
   let store: Store;

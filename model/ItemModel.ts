@@ -16,6 +16,7 @@ type ItemEvents = {
   onVisibilityChange: boolean;
   onItemLoaded: ItemModel;
   onSelectionChange: boolean;
+  onRename: boolean;
 };
 
 export class ItemModel {
@@ -105,6 +106,8 @@ export class ItemModel {
 
   onItemLoaded = (cb: Action<ItemModel>) => this.events.on("onItemLoaded", cb);
 
+  onRename = (cb: Action<boolean>) => this.events.on("onRename", cb);
+
   triggerSelectionEvent = (isSelected: boolean) =>
     this.events.trigger("onSelectionChange", isSelected);
 
@@ -127,11 +130,32 @@ export class ItemModel {
       item.events.offAll("onVisibilityChange");
       item.events.offAll("onItemLoaded");
       item.events.offAll("onSelectionChange");
+      item.events.offAll("onRename");
       item.forEachChild(unassign);
     };
     this.forEachChild(unassign);
   };
 
+  isRenaming = false;
+
+  startRename = () => {
+    this.isRenaming = true;
+    this.events.trigger("onRename", true);
+  };
+
+  finalizeRename = (newName: string) => {
+    if (this.isRenaming) {
+      this.props.title = newName;
+      this.isRenaming = false;
+      this.events.trigger("onRename", false);
+    }
+  };
+  cancelRename = () => {
+    if (this.isRenaming) {
+      this.isRenaming = false;
+      this.events.trigger("onRename", false);
+    }
+  };
   //TRAVERSAL
   //this goes down into children
   getItemBelow = (): ItemModel | undefined => {

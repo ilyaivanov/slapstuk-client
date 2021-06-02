@@ -1,7 +1,7 @@
-import { cls, dom, levels } from "../infra";
-import { renderApp } from "./app";
-import { Store } from "../model/store";
-import { home, folder, video, playlist } from "../api/itemsBuilder";
+import { cls, dom, levels } from "../../infra";
+import { renderApp } from "../app";
+import { Store } from "../../model/store";
+import { home, folder, video, playlist } from "../../api/itemsBuilder";
 import * as page from "./pageObjects";
 
 describe("Having a loaded app", () => {

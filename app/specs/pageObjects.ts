@@ -1,11 +1,12 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
-import { ClassName, cls } from "../infra";
+import { ClassName, cls } from "../../infra";
 
 //actions
 export const keyboardShortcuts = {
   ctrlAnd2: () =>
     fireEvent.keyDown(document, { code: "Digit2", ctrlKey: true }),
+  f2: () => fireEvent.keyDown(document, { code: "F2" }),
   ctrlAnd1: () =>
     fireEvent.keyDown(document, { code: "Digit1", ctrlKey: true }),
 };
@@ -17,17 +18,28 @@ export const toggleItemVisibility = (id: string) =>
 export const inputInSearch = (text: string) =>
   fireEvent.input(searchInput(), { target: { value: text } });
 
+export const inputTitleIntoRowInput = (id: string, text: string) =>
+  fireEvent.input(queryInputForTitle(id), { target: { value: text } });
+
+export const pressEnterInRowInput = (id: string) =>
+  fireEvent.keyDown(queryInputForTitle(id), { key: "Enter" });
+export const pressEscapeInRowInput = (id: string) =>
+  fireEvent.keyDown(queryInputForTitle(id), { key: "Escape" });
+
 export const pressEnterInSearch = () =>
   fireEvent.keyDown(searchInput(), { key: "Enter" });
 
 //page quieries
-export const getRowTitle = (row: Element) =>
+const getRowTitle = (row: Element) =>
   getElementWithClass(cls.rowTitle, row).textContent;
+const queryRowInput = (row: Element) =>
+  queryElementWithClass(cls.rowTitleInput, row);
 
 export const getRow = (id: string) => getByTestId(document.body, "row-" + id);
 export const queryRow = (id: string) =>
   queryByTestId(document.body, "row-" + id);
 export const rowTitle = (id: string) => getRowTitle(getRow(id));
+export const queryInputForTitle = (id: string) => queryRowInput(getRow(id));
 
 export const getRowIcon = (id: string): HTMLElement =>
   getElementWithClass(cls.rowIcon, getRow(id)) as HTMLElement;
@@ -57,6 +69,20 @@ const getElementWithClass = (
 
   if (elements.length === 0)
     throw new Error(`Can't find any element with class ${className}`);
+  if (elements.length > 1)
+    throw new Error(
+      `Found multiple elements with ${className}. I don't want to silently return first one, use a separate method for that`
+    );
+
+  return elements[0];
+};
+
+const queryElementWithClass = (
+  className: ClassName,
+  context: ContextToFindClasses = document
+) => {
+  const elements = context.getElementsByClassName(className);
+
   if (elements.length > 1)
     throw new Error(
       `Found multiple elements with ${className}. I don't want to silently return first one, use a separate method for that`

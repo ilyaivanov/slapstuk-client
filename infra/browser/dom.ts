@@ -11,6 +11,8 @@ export type EventOn<T extends HTMLElement> = Event & KnownTarget<T>;
 export type KeyboardEventOn<T extends HTMLElement> = KeyboardEvent &
   KnownTarget<T>;
 
+export type FocusEventOn<T extends HTMLElement> = FocusEvent & KnownTarget<T>;
+
 export type ClassDefinitions = {
   className?: ClassName;
   classNames?: ClassName[];
@@ -91,6 +93,7 @@ export const div = (props: DivProps) =>
 
 type InputProps = ElementProps & {
   onInput?: Action<EventOn<HTMLInputElement>>;
+  onBlur?: Action<FocusEventOn<HTMLInputElement>>;
   onKeyDown?: Action<KeyboardEventOn<HTMLInputElement>>;
   value?: string;
   placeholder?: string;
@@ -101,6 +104,8 @@ export const input = (props: InputProps) => {
     elem.addEventListener("input", props.onInput as Action<Event>);
   if (props.onKeyDown)
     elem.addEventListener("keydown", props.onKeyDown as Action<Event>);
+  if (props.onBlur)
+    elem.addEventListener("blur", props.onBlur as Action<Event>);
   if (props.value) elem.value = props.value;
   if (props.placeholder) elem.placeholder = props.placeholder;
   return elem;

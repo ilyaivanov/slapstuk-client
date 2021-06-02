@@ -81,6 +81,11 @@ export default class SearchTab {
       e.preventDefault();
       this.store.moveSelectionRight();
     }
+
+    if (e.code === "F2") {
+      if (this.store.mainTabSelectedItem)
+        this.store.mainTabSelectedItem.startRename();
+    }
   };
 
   updateSearch = (isVisible: boolean) =>
