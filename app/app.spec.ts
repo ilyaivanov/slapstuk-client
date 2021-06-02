@@ -1,16 +1,8 @@
-import "@testing-library/jest-dom";
-import { fireEvent } from "@testing-library/dom";
 import { cls, dom, levels } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
 import { home, folder, video, playlist } from "../api/itemsBuilder";
 import * as page from "./pageObjects";
-
-jest.mock("../infra/anim", () => ({
-  animate: () => ({
-    addEventListener: (name: string, cb: any) => cb(),
-  }),
-}));
 
 describe("Having a loaded app", () => {
   let store: Store;
@@ -87,7 +79,7 @@ describe("Having a loaded app", () => {
       ));
 
     describe("toggling first", () => {
-      beforeEach(() => fireEvent.click(page.getChevronFor("first")));
+      beforeEach(() => page.toggleItemVisibility("first"));
 
       it("hides it's children", () => {
         expect(page.queryRow("subfirst1")).not.toBeInTheDocument();
@@ -106,7 +98,7 @@ describe("Having a loaded app", () => {
         ));
 
       describe("toggling first again", () => {
-        beforeEach(() => fireEvent.click(page.getChevronFor("first")));
+        beforeEach(() => page.toggleItemVisibility("first"));
 
         it("hides it's children", () => {
           expect(page.getRow("subfirst1")).toBeInTheDocument();
@@ -138,18 +130,18 @@ describe("Having a loaded app", () => {
 
     it(`Bug: hide subfolder, hide parent and open parent - subfolder won't open`, () => {
       expect(page.queryRow("subfirst1.child")).toBeInTheDocument();
-      fireEvent.click(page.getChevronFor("subfirst1"));
-      fireEvent.click(page.getChevronFor("first"));
-      fireEvent.click(page.getChevronFor("first"));
-      fireEvent.click(page.getChevronFor("subfirst1"));
+      page.toggleItemVisibility("subfirst1");
+      page.toggleItemVisibility("first");
+      page.toggleItemVisibility("first");
+      page.toggleItemVisibility("subfirst1");
       expect(page.queryRow("subfirst1.child")).toBeInTheDocument();
     });
 
     //Memory leaks
     it("when closing and opening first node total number of callbacks should not change (no memory leaks) ", () => {
       const initialCallbackCount = store.home!.getTotalNumberOfListeners();
-      fireEvent.click(page.getChevronFor("first"));
-      fireEvent.click(page.getChevronFor("first"));
+      page.toggleItemVisibility("first");
+      page.toggleItemVisibility("first");
       const res = store.home!.getTotalNumberOfListeners();
       expect(res.callbacksCount).toEqual(initialCallbackCount.callbacksCount);
     });
@@ -160,12 +152,12 @@ describe("Having a loaded app", () => {
     expect(page.page()).toHaveClass(cls.darkTheme));
 
   describe("toggling theme", () => {
-    beforeEach(() => fireEvent.click(page.themeToggler()));
+    beforeEach(page.toggleTheme);
     it("switches it to light", () =>
       expect(page.page()).toHaveClass(cls.lightTheme));
 
     describe("toggling theme again", () => {
-      beforeEach(() => fireEvent.click(page.themeToggler()));
+      beforeEach(page.toggleTheme);
       it("switches it to dark", () =>
         expect(page.page()).toHaveClass(cls.darkTheme));
     });

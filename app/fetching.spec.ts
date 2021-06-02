@@ -1,5 +1,3 @@
-import "@testing-library/jest-dom";
-import { fireEvent } from "@testing-library/dom";
 import { cls, dom } from "../infra";
 import { renderApp } from "./app";
 import { Store } from "../model/store";
@@ -7,17 +5,6 @@ import * as page from "./pageObjects";
 import { home, playlist, search, video } from "../api/itemsBuilder";
 import { ItemModel } from "../model/ItemModel";
 import { loadItemChildren, searchItems } from "../api/itemsLoader";
-
-jest.mock("../infra/anim", () => ({
-  animate: () => ({
-    addEventListener: (name: string, cb: any) => cb(),
-  }),
-}));
-
-jest.mock("../api/itemsLoader", () => ({
-  loadItemChildren: jest.fn(),
-  searchItems: jest.fn(),
-}));
 
 describe("Having a loaded app", () => {
   let store: Store;
@@ -36,7 +23,7 @@ describe("Having a loaded app", () => {
     expect(page.getChevronFor("MyPlaylist")).toHaveClass(cls.rowChevronActive));
 
   describe("Clicking on a Playlist chevron", () => {
-    beforeEach(() => fireEvent.click(page.getChevronFor("MyPlaylist")));
+    beforeEach(() => page.toggleItemVisibility("MyPlaylist"));
 
     it("shows loading indicator", () =>
       expect(page.getLoadingIndicator("MyPlaylist")).toBeInTheDocument());
@@ -59,16 +46,16 @@ describe("Having a loaded app", () => {
       });
 
       it("closing and opening item when it has been loaded shows children immediatelly", () => {
-        fireEvent.click(page.getChevronFor("MyPlaylist"));
+        page.toggleItemVisibility("MyPlaylist");
         expect(page.queryRow("MyVid1")).not.toBeInTheDocument();
-        fireEvent.click(page.getChevronFor("MyPlaylist"));
+        page.toggleItemVisibility("MyPlaylist");
         expect(page.getRow("MyVid1")).toBeInTheDocument();
       });
     });
 
     it("closing and opening item while it is loading should not yield another request", () => {
-      fireEvent.click(page.getChevronFor("MyPlaylist"));
-      fireEvent.click(page.getChevronFor("MyPlaylist"));
+      page.toggleItemVisibility("MyPlaylist");
+      page.toggleItemVisibility("MyPlaylist");
       expect(loadItemChildren).toHaveBeenCalledTimes(1);
     });
   });
@@ -81,8 +68,8 @@ describe("Having a loaded app", () => {
 
     describe("entering asura in input and hitting enter", () => {
       beforeEach(() => {
-        fireEvent.input(page.searchInput(), { target: { value: "asura" } });
-        fireEvent.keyDown(page.searchInput(), { key: "Enter" });
+        page.inputInSearch("asura");
+        page.pressEnterInSearch();
       });
 
       it("initiates search request", () =>

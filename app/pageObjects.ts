@@ -10,6 +10,16 @@ export const keyboardShortcuts = {
     fireEvent.keyDown(document, { code: "Digit1", ctrlKey: true }),
 };
 
+export const toggleTheme = () => fireEvent.click(themeToggler());
+export const toggleItemVisibility = (id: string) =>
+  fireEvent.click(getChevronFor(id));
+
+export const inputInSearch = (text: string) =>
+  fireEvent.input(searchInput(), { target: { value: text } });
+
+export const pressEnterInSearch = () =>
+  fireEvent.keyDown(searchInput(), { key: "Enter" });
+
 //page quieries
 export const getRowTitle = (row: Element) =>
   getElementWithClass(cls.rowTitle, row).textContent;

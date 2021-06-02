@@ -11,6 +11,9 @@ type EventsTypes = {
 export type Theme = "dark" | "light";
 
 export class Store {
+  mainTabSelectedItemId?: string;
+  searchTabSelectedItemId?: string;
+
   home?: ItemModel;
   search?: ItemModel;
   private events = new Events<EventsTypes>();
