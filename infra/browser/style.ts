@@ -41,6 +41,8 @@ export const style = {
 
   class: (className: CN, styles: CompoundStyles) =>
     handleCompoundStyles(`.${className}`, styles),
+  class2: (className1: CN, className2: CN, styles: CompoundStyles) =>
+    handleCompoundStyles(`.${className1}.${className2}`, styles),
   id: (id: ElementId, styles: CompoundStyles) =>
     handleCompoundStyles(`#${id}`, styles),
   after: (className: CN, styles: Styles) => {

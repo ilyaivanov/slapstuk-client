@@ -67,6 +67,14 @@ export default class SearchTab {
       if (this.store.isSearchVisible) setTimeout(() => this.input.focus(), 200);
       else this.input.blur();
     }
+
+    if (e.code === "ArrowDown") {
+      e.preventDefault();
+      this.store.moveSelectionDown();
+    } else if (e.code === "ArrowUp") {
+      e.preventDefault();
+      this.store.moveSelectionUp();
+    }
   };
 
   updateSearch = (isVisible: boolean) =>

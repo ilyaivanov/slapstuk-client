@@ -9,15 +9,17 @@ type EventsTypes = {
 };
 
 export type Theme = "dark" | "light";
+export type Tab = "main" | "search";
 
 export class Store {
-  mainTabSelectedItemId?: string;
-  searchTabSelectedItemId?: string;
+  mainTabSelectedItem?: ItemModel;
+  searchTabSelectedItemId?: ItemModel;
 
   home?: ItemModel;
   search?: ItemModel;
   private events = new Events<EventsTypes>();
   isSearchVisible = false;
+  tabFocused = "main" as Tab;
 
   toggleVisibility = () => {
     this.isSearchVisible = !this.isSearchVisible;
@@ -50,6 +52,41 @@ export class Store {
 
   onThemeChange = (cb: Action<Theme>) => {
     this.events.on("onThemeChange", cb);
+  };
+
+  //Navigation
+
+  moveSelectionUp = () => {
+    if (!this.selectFirstIfNoneIsSelected()) {
+      const previousItem = this.mainTabSelectedItem!.getItemAbove();
+      previousItem && this.selectItem(previousItem);
+    }
+  };
+
+  moveSelectionDown = () => {
+    if (!this.selectFirstIfNoneIsSelected()) {
+      const nextItem = this.mainTabSelectedItem!.getItemBelow();
+      nextItem && this.selectItem(nextItem);
+    }
+  };
+
+  selectItem = (item: ItemModel) => {
+    if (this.mainTabSelectedItem)
+      this.mainTabSelectedItem.triggerSelectionEvent(false);
+    this.mainTabSelectedItem = item;
+    this.mainTabSelectedItem.triggerSelectionEvent(true);
+  };
+
+  //returns true if selection was changed
+  //postcondition: this.mainTabSelectedItem is always defined
+  private selectFirstIfNoneIsSelected = (): boolean => {
+    if (!this.mainTabSelectedItem) {
+      const firstItem = this.home!.children?.items[0]!;
+      this.mainTabSelectedItem = firstItem;
+      firstItem.triggerSelectionEvent(true);
+      return true;
+    }
+    return false;
   };
 }
 

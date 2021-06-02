@@ -15,11 +15,17 @@ type ItemAttributes = {
 type ItemEvents = {
   onVisibilityChange: boolean;
   onItemLoaded: ItemModel;
+  onSelectionChange: boolean;
 };
 
 export class ItemModel {
+  public parent?: ItemModel;
   events = new Events<ItemEvents>();
-  constructor(private props: ItemAttributes) {}
+  constructor(private props: ItemAttributes) {
+    if (props.children)
+      props.children.items.forEach((item) => (item.parent = this));
+  }
+
   mapChildren = <T>(map: Func1<ItemModel, T>): T[] => {
     const c = this.props.children;
     if (c) return c.items.map(map);
@@ -94,7 +100,13 @@ export class ItemModel {
   onVisibilityChange = (cb: Action<boolean>) =>
     this.events.on("onVisibilityChange", cb);
 
+  onSelectionChange = (cb: Action<boolean>) =>
+    this.events.on("onSelectionChange", cb);
+
   onItemLoaded = (cb: Action<ItemModel>) => this.events.on("onItemLoaded", cb);
+
+  triggerSelectionEvent = (isSelected: boolean) =>
+    this.events.trigger("onSelectionChange", isSelected);
 
   get previewImage() {
     const { image, videoId } = this.props;
@@ -113,11 +125,71 @@ export class ItemModel {
     const unassign = (item: ItemModel) => {
       item.events.offAll("onVisibilityChange");
       item.events.offAll("onItemLoaded");
+      item.events.offAll("onSelectionChange");
       item.forEachChild(unassign);
     };
     this.forEachChild(unassign);
   };
 
+  //TRAVERSAL
+  //this goes down into children
+  getItemBelow = (): ItemModel | undefined => {
+    if (this.isOpen && this.children) return this.children?.items[0];
+
+    const followingItem = this.getFollowingItem();
+    if (followingItem) return followingItem;
+    else {
+      let parent: ItemModel | undefined = this.parent;
+      while (parent && parent.isLast()) {
+        parent = parent.parent;
+      }
+      if (parent) return parent.getFollowingItem();
+    }
+  };
+
+  getItemAbove = (): ItemModel | undefined => {
+    const previous = this.getPreviousItem();
+    if (previous && previous.isOpen) return previous.getLastNestedItem();
+    else if (previous) return previous;
+    else if (!this.parent?.isRoot()) return this.parent;
+  };
+
+  //this always returns following item without going down to children
+  getFollowingItem = (): ItemModel | undefined => {
+    const parent = this.parent;
+    if (parent) {
+      const context: ItemModel[] = parent.children!.items;
+      const index = context.indexOf(this);
+      if (index < context.length - 1) {
+        return context[index + 1];
+      }
+    }
+  };
+  //this always returns following item without going down to children
+  getPreviousItem = (): ItemModel | undefined => {
+    const parent = this.parent;
+    if (parent) {
+      const context: ItemModel[] = parent.children!.items;
+      const index = context.indexOf(this);
+      if (index > 0) {
+        return context[index - 1];
+      }
+    }
+  };
+
+  getLastNestedItem = (): ItemModel => {
+    if (this.isOpen && this.children) {
+      const { items } = this.children;
+      return items[items.length - 1].getLastNestedItem();
+    }
+    return this;
+  };
+
+  isLast = (): boolean => !this.getFollowingItem();
+
+  isRoot = () => this.parent == undefined;
+
+  //MEMORY LEAK DETECTION
   getTotalNumberOfListeners = () => {
     let modelsCount = 0;
     let callbacksCount = 0;

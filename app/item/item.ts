@@ -10,13 +10,12 @@ import {
 } from "../../infra";
 import { ItemModel } from "../../model/ItemModel";
 import renderIcon from "./itemIcon";
-import { loadItemChildren } from "../../api/itemsLoader";
 
 export const renderItem = (item: ItemModel, level = 0): Node =>
   dom.fragment([renderRow(item, level), renderChildren(item, level)]);
 
-const renderRow = (item: ItemModel, level: number) =>
-  dom.div({
+const renderRow = (item: ItemModel, level: number) => {
+  const row = dom.div({
     testId: "row-" + item.id,
     classNames: [cls.row, levels.rowForLevel(level)],
     children: [
@@ -27,6 +26,13 @@ const renderRow = (item: ItemModel, level: number) =>
       }),
     ],
   });
+  item.onSelectionChange((isSelected) =>
+    dom.assignClassMap(row, {
+      [cls.rowSelected]: isSelected,
+    })
+  );
+  return row;
+};
 
 const renderChildren = (item: ItemModel, level: number) => {
   //TODO: do not render children at all when closed
@@ -111,6 +117,10 @@ style.class(cls.row, {
 
   ...css.paddingVertical(4),
   onHover: { backgroundColor: colorVars.rowHover },
+});
+
+style.class2(cls.row, cls.rowSelected, {
+  backgroundColor: colorVars.rowSelected,
 });
 
 style.class(cls.rowChildren, {

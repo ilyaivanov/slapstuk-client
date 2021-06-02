@@ -15,6 +15,7 @@ export const cls = {
 
   //tree
   row: "row",
+  rowSelected: "row-selected",
   rowChevron: "row-chevron",
   rowChevronOpen: "row-chevron-open",
   rowChevronActive: "row-chevron-active",
