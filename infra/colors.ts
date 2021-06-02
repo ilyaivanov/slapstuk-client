@@ -58,8 +58,9 @@ const darkTheme = {
   itemClosedImageGlow: "rgba(255,255,255,0.45)",
   itemClosedImageInset: "rgba(255,255,255,0.15)",
   scrollBar: swatches.materialElevetion["12dp"],
-
+  tabBorder: swatches.materialElevetion["24dp"],
   //to figure out
+
   hover: swatches.materialElevetion["08dp"],
   primary: swatches.grey["100"],
 };
@@ -79,6 +80,8 @@ const lightTheme: ThemeColors = {
   itemClosedImageGlow: "rgba(0,0,0,0.5)",
   itemClosedImageInset: "rgba(0,0,0,0.1)",
   scrollBar: "rgba(0,0,0,0.08)",
+  tabBorder: "rgba(0,0,0,0.15)",
+
   //to figure out
   hover: "rgba(0,0,0,0.08)",
   primary: "rgb(76, 81, 85)",

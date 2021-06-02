@@ -1,17 +1,22 @@
 import { searchItems } from "../api/itemsLoader";
-import { cls, css, dom, style } from "../infra";
+import { cls, colorVars, css, dom, levels, style } from "../infra";
 import { Store } from "../model/store";
 import { renderItem } from "./item/item";
 
 export default class SearchTab {
   input = dom.input({
     testId: "search-input",
+    classNames: [cls.searchInput],
     onKeyDown: (e) => {
       if (e.key === "Enter") {
         searchItems(this.store, e.currentTarget.value);
         dom.setChild(
           this.searchResults,
-          dom.div({ children: ["Loading..."], testId: "search-loading" })
+          dom.div({
+            className: levels.rowForLevel(0),
+            children: ["Loading..."],
+            testId: "search-loading",
+          })
         );
       }
     },
@@ -21,7 +26,16 @@ export default class SearchTab {
 
   el = dom.div({
     classNames: [cls.searchTab],
-    children: [this.input, this.searchResults],
+    children: [
+      dom.div({
+        classNames: [levels.rowForLevel(0), cls.searchInputGroup],
+        children: [
+          this.input,
+          dom.button({ className: cls.searchInputButton, text: "Search" }),
+        ],
+      }),
+      this.searchResults,
+    ],
   });
 
   constructor(private store: Store) {
@@ -39,7 +53,7 @@ export default class SearchTab {
   onKeyDown = (e: KeyboardEvent) => {
     if (e.code == "Digit1" && e.ctrlKey) {
       e.preventDefault();
-
+      this.input.blur();
       //   console.log("store.focusOnMain();");
       // store.focusOnMain();
     }
@@ -51,6 +65,7 @@ export default class SearchTab {
       //I'm using setTimeout here because focus method scrolls to element,
       //which breaks my transition
       if (this.store.isSearchVisible) setTimeout(() => this.input.focus(), 200);
+      else this.input.blur();
     }
   };
 
@@ -63,7 +78,21 @@ export default class SearchTab {
 style.class(cls.searchTab, {
   flex: 1,
   transition: css.transition({ marginRight: 200 }),
-  backgroundColor: "rgba(200, 0, 0, 0.7)",
+  paddingTop: 20,
+  borderLeft: `1px solid ${colorVars.tabBorder}`,
+});
+
+style.class(cls.searchInputGroup, {
+  width: "100%",
+  boxSizing: "border-box",
+  display: "flex",
+});
+
+style.class(cls.searchInput, {
+  flex: 1,
+});
+style.class(cls.searchInputButton, {
+  backgroundColor: "red",
 });
 
 style.class(cls.searchTab_Hidden, { marginRight: "-100%" });

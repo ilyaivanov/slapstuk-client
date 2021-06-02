@@ -8,6 +8,9 @@ export const cls = {
   main: "main",
   mainTab: "main-tab",
   searchTab: "search-tab",
+  searchInputGroup: "search-input-group",
+  searchInputButton: "search-input-button",
+  searchInput: "search-input",
   searchTab_Hidden: "search-tab-hidden",
 
   //tree

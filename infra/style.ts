@@ -145,6 +145,7 @@ export type Styles = Partial<{
 
   //border
   border: string;
+  borderLeft: string;
   outline: string;
   borderRadius: number | "50%";
   borderTopRightRadius: number;
