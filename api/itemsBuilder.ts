@@ -20,7 +20,7 @@ export const search = (children: ItemModel[]): ItemModel =>
 export const folder = (title: string, children?: ItemModel[]): ItemModel =>
   new ItemModel({
     id: title,
-    isOpen: true,
+    isOpen: !!children,
     title: title,
     type: "folder",
     children: children && new ItemCollection(children),
@@ -29,7 +29,7 @@ export const folder = (title: string, children?: ItemModel[]): ItemModel =>
 export const video = (title: string, videoId: string): ItemModel =>
   new ItemModel({
     id: title,
-    isOpen: true,
+    isOpen: false,
     title: title,
     videoId: videoId,
     type: "YTvideo",
@@ -42,7 +42,7 @@ export const playlist = (
 ): ItemModel =>
   new ItemModel({
     id: title,
-    isOpen: false,
+    isOpen: !!children,
     title: title,
     image: image,
     type: "YTplaylist",
@@ -56,7 +56,7 @@ export const channel = (
 ): ItemModel =>
   new ItemModel({
     id: title,
-    isOpen: true,
+    isOpen: !!children,
     title: title,
     image: image,
     type: "YTchannel",

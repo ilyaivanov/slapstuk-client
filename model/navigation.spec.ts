@@ -97,6 +97,39 @@ describe("Having a loaded app", () => {
     });
   });
 
+  describe("when second.child2 is selected and it is open", () => {
+    let secondChild2: ItemModel;
+    beforeEach(() => {
+      secondChild2 = second.children!.items[1];
+      store.selectItem(secondChild2);
+    });
+    it("second.child2 is open", () => expect(secondChild2.isOpen).toBeTruthy());
+
+    describe("moving left", () => {
+      beforeEach(() => store.moveSelectionLeft());
+      it("second.child2 is closed", () =>
+        expect(secondChild2.isOpen).toBeFalsy());
+
+      describe("moving left again", () => {
+        beforeEach(() => store.moveSelectionLeft());
+        it("selects second", () =>
+          expect(store.mainTabSelectedItem!.id).toBe("second"));
+      });
+
+      describe("moving right", () => {
+        beforeEach(() => store.moveSelectionRight());
+        it("second.child2 is open", () =>
+          expect(secondChild2.isOpen).toBeTruthy());
+
+        describe("moving right again", () => {
+          beforeEach(() => store.moveSelectionRight());
+          it("selects second.child2.child1", () =>
+            expect(store.mainTabSelectedItem!.id).toBe("second.child2.child1"));
+        });
+      });
+    });
+  });
+
   describe("when second.child2.child1 is selected", () => {
     beforeEach(() =>
       store.selectItem(second.children!.items[1].children!.items[0])

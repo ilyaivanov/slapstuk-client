@@ -70,6 +70,28 @@ export class Store {
     }
   };
 
+  moveSelectionLeft = () => {
+    if (!this.selectFirstIfNoneIsSelected()) {
+      if (this.mainTabSelectedItem?.isOpen)
+        this.mainTabSelectedItem?.toggleVisibility();
+      else {
+        const parent = this.mainTabSelectedItem!.parent;
+        if (parent && !parent.isRoot()) this.selectItem(parent);
+      }
+    }
+  };
+
+  moveSelectionRight = () => {
+    if (!this.selectFirstIfNoneIsSelected()) {
+      if (!this.mainTabSelectedItem?.isOpen)
+        this.mainTabSelectedItem?.toggleVisibility();
+      else {
+        const firstChild = this.mainTabSelectedItem!.getFirstChild();
+        if (firstChild) this.selectItem(firstChild);
+      }
+    }
+  };
+
   selectItem = (item: ItemModel) => {
     if (this.mainTabSelectedItem)
       this.mainTabSelectedItem.triggerSelectionEvent(false);

@@ -74,6 +74,12 @@ export default class SearchTab {
     } else if (e.code === "ArrowUp") {
       e.preventDefault();
       this.store.moveSelectionUp();
+    } else if (e.code === "ArrowLeft") {
+      e.preventDefault();
+      this.store.moveSelectionLeft();
+    } else if (e.code === "ArrowRight") {
+      e.preventDefault();
+      this.store.moveSelectionRight();
     }
   };
 

@@ -116,6 +116,7 @@ export class ItemModel {
   }
 
   itemsLoaded = (items: ItemModel[]) => {
+    items.forEach((i) => (i.parent = this));
     this.props.children = new ItemCollection(items);
     this.props.isLoading = false;
     this.events.trigger("onItemLoaded", this);
@@ -183,6 +184,11 @@ export class ItemModel {
       return items[items.length - 1].getLastNestedItem();
     }
     return this;
+  };
+
+  getFirstChild = (): ItemModel | undefined => {
+    const items = this.children?.items;
+    if (items) return items[0];
   };
 
   isLast = (): boolean => !this.getFollowingItem();
