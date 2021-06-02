@@ -1,4 +1,4 @@
-import "./infra/normalize";
+import "./infra/browser/normalize";
 import { renderApp } from "./app/app";
 import { Store } from "./model/store";
 import { home, folder, video, channel, playlist } from "./api/itemsBuilder";

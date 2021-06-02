@@ -76,7 +76,7 @@ const lightTheme: ThemeColors = {
   header: "rgb(50,54,57)",
   childrenBorder: "#DCE0E2",
   rowHover: "rgba(0,0,0,0.03)",
-  rowSelected: "rgba(0,0,0,0.16)",
+  rowSelected: "rgba(0,0,0,0.12)",
   itemInnerCircle: "rgb(76, 81, 85)",
   itemOuterCircle: "rgba(0,0,0,0.08)",
   itemClosedImageGlow: "rgba(0,0,0,0.5)",
