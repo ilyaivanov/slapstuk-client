@@ -1,6 +1,6 @@
-import { Theme } from "../model/store";
+import { Theme } from "../../model/store";
 import { ClassName, ClassMap, cls } from "./keys";
-import { style } from "./style";
+import { style } from "../index";
 
 const swatches = {
   grey: {

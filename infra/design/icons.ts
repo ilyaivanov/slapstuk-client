@@ -1,4 +1,4 @@
-import * as svg from "./svg";
+import { svg } from "../index";
 
 export const chevron = (props: Partial<svg.SvgProps>): SVGSVGElement =>
   svgPathIcon(props, {

@@ -1,4 +1,4 @@
-import { ClassName } from "./keys";
+import { ClassName } from "../index";
 import { camelToSnakeCase, Styles, style } from "./style";
 
 type Transition = Partial<Record<keyof Styles, number>>;

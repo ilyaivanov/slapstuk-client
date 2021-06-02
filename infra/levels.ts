@@ -1,6 +1,6 @@
-import { ClassName } from "./keys";
-import { spacings } from "./constants";
-import { style } from "./style";
+import { ClassName } from "./design/keys";
+import { spacings } from "./design/constants";
+import { style } from "./browser/style";
 
 // this file generates a bunch of classes for nested levels
 // I'm using this approach because gallery view requires full width while being nested

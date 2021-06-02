@@ -1,12 +1,12 @@
-export * as dom from "./dom";
-export * as svg from "./svg";
-export * as css from "./css";
-export * as anim from "./anim";
-export { style, Styles } from "./style";
-export { cls, ids, ClassName } from "./keys";
+export * as dom from "./browser/dom";
+export * as svg from "./browser/svg";
+export * as css from "./browser/css";
+export * as anim from "./browser/anim";
+export { style, Styles } from "./browser/style";
+export { cls, ids, ClassName, ClassMap, ElementId } from "./design/keys";
 
 //project specific stuff
 export * as levels from "./levels";
-export * as icons from "./icons";
-export { timings } from "./constants";
-export { colorVars, getThemeClassMap, initThemes } from "./colors";
+export * as icons from "./design/icons";
+export { timings, spacings } from "./design/constants";
+export { colorVars, getThemeClassMap, initThemes } from "./design/colors";

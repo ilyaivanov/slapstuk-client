@@ -1,4 +1,4 @@
-import { ClassName, ElementId } from "./keys";
+import { ClassName, ElementId } from "../index";
 
 type Action<T> = (a: T) => void;
 

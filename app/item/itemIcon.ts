@@ -9,8 +9,8 @@ import {
   style,
   Styles,
   svg,
+  spacings,
 } from "../../infra";
-import { spacings } from "../../infra/constants";
 import { ItemModel } from "../../model/ItemModel";
 
 const { outerRadius, innerRadius } = spacings;

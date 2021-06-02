@@ -1,4 +1,4 @@
-import { ClassName, ElementId } from "./keys";
+import { ClassName, ElementId } from "../index";
 
 const s = document.createElement("style");
 document.head.appendChild(s);

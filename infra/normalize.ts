@@ -1,4 +1,4 @@
-import { style } from "./style";
+import { style } from "./index";
 
 //core is taken from https://github.com/necolas/normalize.css/blob/master/normalize.css
 //not using npm package cause I want full control over my resultings css
