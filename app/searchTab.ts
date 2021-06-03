@@ -86,6 +86,10 @@ export default class SearchTab {
       if (this.store.mainTabSelectedItem)
         this.store.mainTabSelectedItem.startRename();
     }
+
+    if (e.key === "Enter") {
+      this.store.createItem();
+    }
   };
 
   updateSearch = (isVisible: boolean) =>

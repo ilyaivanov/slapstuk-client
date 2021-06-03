@@ -141,6 +141,12 @@ const renderChildren = (item: ItemModel, level: number) => {
   item.onVisibilityChange(onVisiblityChange);
   item.onItemLoaded(onItemLoaded);
 
+  item.children?.onItemAdded(({ index, item }) => {
+    const i = childContainer.childNodes[index] as HTMLElement;
+    i.insertAdjacentElement("afterend", renderChildren(item, level + 1));
+    i.insertAdjacentElement("afterend", renderRow(item, level + 1));
+  });
+
   return childContainer;
 };
 

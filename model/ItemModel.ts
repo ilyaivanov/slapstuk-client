@@ -260,6 +260,26 @@ export class ItemModel {
   };
 }
 
+type ItemAddedPayload = {
+  index: number;
+  item: ItemModel;
+};
+
+type ItemCollectionEvents = {
+  addItemAfter: ItemAddedPayload;
+};
+
 export class ItemCollection {
+  events = new Events<ItemCollectionEvents>();
+
+  onItemAdded = (cb: Action<ItemAddedPayload>) =>
+    this.events.on("addItemAfter", cb);
+
+  addItemAfter = (itemToAddAfter: ItemModel, item: ItemModel) => {
+    const index = this.items.indexOf(itemToAddAfter);
+    this.items.splice(index, 0, item);
+    this.events.trigger("addItemAfter", { index, item });
+  };
+
   constructor(public items: ItemModel[]) {}
 }

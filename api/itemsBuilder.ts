@@ -26,6 +26,14 @@ export const folder = (title: string, children?: ItemModel[]): ItemModel =>
     children: children && new ItemCollection(children),
   });
 
+export const emptyFolder = (): ItemModel =>
+  new ItemModel({
+    id: Math.random() + "",
+    isOpen: false,
+    title: "",
+    type: "folder",
+  });
+
 export const video = (title: string, videoId: string): ItemModel =>
   new ItemModel({
     id: title,

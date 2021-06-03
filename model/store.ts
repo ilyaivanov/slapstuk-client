@@ -1,3 +1,4 @@
+import { emptyFolder, folder } from "../api/itemsBuilder";
 import Events from "./events";
 import { ItemCollection, ItemModel } from "./ItemModel";
 
@@ -54,6 +55,18 @@ export class Store {
     this.events.on("onThemeChange", cb);
   };
 
+  createItem = () => {
+    if (this.mainTabSelectedItem) {
+      const newItem = emptyFolder();
+      newItem.parent = this.mainTabSelectedItem;
+      this.mainTabSelectedItem.parent!.children!.addItemAfter(
+        this.mainTabSelectedItem,
+        newItem
+      );
+      this.selectItem(newItem);
+      newItem.startRename();
+    }
+  };
   //Navigation
 
   moveSelectionUp = () => {

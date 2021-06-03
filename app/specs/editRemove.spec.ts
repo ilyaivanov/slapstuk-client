@@ -25,15 +25,18 @@ describe("App", () => {
   it("first has title first (checking initial state)", () =>
     expect(page.rowTitle("first")).toEqual("first"));
 
-  describe("pressing F2", () => {
+  xdescribe("pressing F2", () => {
     beforeEach(() => page.keyboardShortcuts.f2());
+
     it("shows item title in the input field with focus", () =>
       expect(page.queryInputForTitle("first")).toBeDefined());
 
     describe("entering a new title 'new title'", () => {
       beforeEach(() => page.inputTitleIntoRowInput("first", "new title"));
+
       describe("pressing Enter", () => {
         beforeEach(() => page.pressEnterInRowInput("first"));
+
         it("removes input", () =>
           expect(page.queryInputForTitle("first")).toBeUndefined());
 
@@ -51,5 +54,14 @@ describe("App", () => {
           expect(page.rowTitle("first")).toEqual("first"));
       });
     });
+  });
+
+  describe("pressing Enter", () => {
+    beforeEach(() => {
+      Math.random = () => "myId" as unknown as number;
+      page.pressEnterInDocument();
+    });
+    it("creates a new node", () =>
+      expect(page.queryInputForTitle("myId")).toBeDefined());
   });
 });

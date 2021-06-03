@@ -23,6 +23,9 @@ export const inputTitleIntoRowInput = (id: string, text: string) =>
 
 export const pressEnterInRowInput = (id: string) =>
   fireEvent.keyDown(queryInputForTitle(id), { key: "Enter" });
+export const pressEnterInDocument = () =>
+  fireEvent.keyDown(document, { key: "Enter" });
+
 export const pressEscapeInRowInput = (id: string) =>
   fireEvent.keyDown(queryInputForTitle(id), { key: "Escape" });
 
